@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <title>Gebedstijden - Rotterdam</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style>
+
+      /* Bu WebSitesi Talha Yıldız Tarafından AbanGroup için yapılmıştır. */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: "Segoe UI", system-ui, Arial, sans-serif;
+      background: radial-gradient(circle at top, #141b3a 0%, #040614 55%, #02030a 100%);
+      color: #ffffff;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      overflow-x: hidden;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 1400px;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+
+    /* Top bar */
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 16px;
+      border-radius: 999px;
+      background: rgba(0,0,0,0.35);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .top-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: #21e6b8;
+      box-shadow: 0 0 10px #21e6b8;
+    }
+    .top-title {
+      font-size: 0.95rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      opacity: 0.8;
+    }
+    .top-right {
+      font-size: 0.85rem;
+      opacity: 0.7;
+    }
+
+    /* Header */
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .location {
+      font-size: 2.3rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+    }
+    .date {
+      opacity: 0.85;
+      font-size: 1rem;
+      margin-top: 4px;
+    }
+    .clock {
+      font-size: 3.4rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-align: right;
+    }
+    .tz-label {
+      text-align: right;
+      font-size: 0.9rem;
+      opacity: 0.65;
+    }
+
+    /* Layout body: left big, right grid */
+
+    .main-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+      gap: 22px;
+      align-items: stretch;
+    }
+
+    @media (max-width: 900px) {
+      .main-layout { grid-template-columns: 1fr; }
+    }
+
+    .left-column {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    /* Next panel */
+
+    .next-panel {
+      flex: 1;
+      background: linear-gradient(135deg, rgba(33,230,184,0.12), rgba(5,8,30,0.95));
+      padding: 22px;
+      border-radius: 20px;
+      border: 1px solid rgba(33,230,184,0.30);
+      box-shadow: 0 0 24px rgba(0,0,0,0.45);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    .next-label {
+      opacity: 0.8;
+      letter-spacing: 2px;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+    }
+    .next-name {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-top: 4px;
+    }
+    .next-time {
+      font-size: 1.6rem;
+      opacity: 0.9;
+    }
+    .next-countdown {
+      font-size: 1.2rem;
+      opacity: 0.9;
+    }
+
+    .btn {
+      padding: 12px 22px;
+      border-radius: 999px;
+      background: #21e6b8;
+      color: #000;
+      border: none;
+      cursor: pointer;
+      font-weight: 700;
+      font-size: 0.95rem;
+      align-self: flex-start;
+      transition: 0.2s;
+    }
+    .btn:hover { background: #39ffd0; }
+
+    .hint {
+      font-size: 0.8rem;
+      opacity: 0.7;
+      margin-top: -8px;
+    }
+
+    /* Grid on the right */
+
+    .grid-panel {
+      background: rgba(255,255,255,0.03);
+      border-radius: 20px;
+      padding: 18px 20px 22px;
+      border: 1px solid rgba(255,255,255,0.06);
+      box-shadow: 0 0 18px rgba(0,0,0,0.4);
+    }
+
+    .grid-title {
+      font-size: 0.95rem;
+      opacity: 0.8;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 14px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap: 14px;
+    }
+    @media (max-width: 1100px) {
+      .grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
+    }
+    @media (max-width: 700px) {
+      .grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
+    }
+
+    .card {
+      position: relative;
+      background: radial-gradient(circle at top, rgba(255,255,255,0.10), rgba(2,3,12,0.95));
+      padding: 16px 14px 18px;
+      border-radius: 16px;
+      text-align: center;
+      border: 1px solid rgba(255,255,255,0.06);
+      overflow: hidden;
+      transition: 0.25s ease;
+    }
+
+    .card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top, rgba(255,255,255,0.12), transparent 60%);
+      opacity: 0.3;
+      pointer-events: none;
+    }
+
+    .card-name {
+      font-size: 0.9rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      opacity: 0.85;
+      margin-bottom: 8px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .card-time {
+      font-size: 1.7rem;
+      font-weight: 700;
+      position: relative;
+      z-index: 1;
+    }
+
+    .card-extra {
+      font-size: 0.8rem;
+      opacity: 0.75;
+      margin-top: 4px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .card.highlight {
+      border-color: #21e6b8;
+      box-shadow: 0 0 20px rgba(33,230,184,0.75);
+      transform: translateY(-3px) scale(1.03);
+      animation: pulse 1.8s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%   { box-shadow: 0 0 16px rgba(33,230,184,0.6); }
+      50%  { box-shadow: 0 0 28px rgba(33,230,184,1); }
+      100% { box-shadow: 0 0 16px rgba(33,230,184,0.6); }
+    }
+
+    /* Logo bottom center */
+    .logo-box {
+      margin-top: 32px;
+      display: flex;
+      justify-content: center;
+      opacity: 0.7;
+    }
+    .logo-box img {
+      height: 80px;
+      object-fit: contain;
+      filter: drop-shadow(0 0 6px rgba(0,0,0,0.5));
+    }
+
+  </style>
+</head>
+
+<body>
+<div class="container">
+
+  <!-- Top bar -->
+
+  <div class="topbar">
+    <div class="topbar-left">
+      <div class="top-dot"></div>
+      <div class="top-title">Gebedstijden Paneel</div>
+    </div>
+    <div class="top-right">Aban Group • Rotterdam</div>
+  </div>
+
+  <!-- Header -->
+
+  <header class="header">
+    <div>
+      <div class="location">Rotterdam</div>
+      <div class="date" id="dateDisplay"></div>
+    </div>
+    <div>
+      <div class="clock" id="clock">--:--:--</div>
+      <div class="tz-label">Europe/Amsterdam</div>
+    </div>
+  </header>
+
+  <!-- Main layout -->
+
+  <section class="main-layout">
+
+    <!-- Left: next prayer & button -->
+    <div class="left-column">
+      <div class="next-panel">
+        <div>
+          <div class="next-label">Volgende gebed</div>
+          <div class="next-name" id="nextPrayerName">-</div>
+          <div class="next-time" id="nextPrayerTime">-</div>
+        </div>
+        <div class="next-countdown" id="nextPrayerCountdown">-</div>
+      </div>
+
+      <div>
+        <button class="btn" id="playTestBtn">Ezan test / geluid inschakelen</button>
+        <div class="hint">
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: grid of times -->
+    <div class="grid-panel">
+      <div class="grid-title">Gebedstijden vandaag</div>
+      <div class="grid" id="prayerGrid"></div>
+    </div>
+
+  </section>
+
+  <!-- Logo bottom center -->
+
+  <div class="logo-box">
+    
+    <img src="abanlogo.png" alt="Aban Group logo">
+
+  </div>
+
+</div>
+
+<!-- Ezan ses dosyası -->
+<audio id="adhanAudio" preload="auto">
+  <source src="azan.mp4" type="video/mp4">
+</audio>
+
+<script>
+
+/* ==============================
+   KONFİG
+============================== */
+
+const CITY     = "Rotterdam";
+const COUNTRY  = "Netherlands";
+const METHOD   = 13;
+
+// Ezan çalınacak asıl vakitler
+const prayerOrder = ["Fajr","Dhuhr","Asr","Maghrib","Isha"];
+// Ekranda gösterilecek kart sırası (güneş doğuşu dahil)
+const displayOrder = ["Fajr","Sunrise","Dhuhr","Asr","Maghrib","Isha"];
+
+const namesNL = {
+  Fajr:    "Fajr",
+  Sunrise: "Zonsopgang",
+  Dhuhr:   "Dhuhr",
+  Asr:     "Asr",
+  Maghrib: "Maghrib",
+  Isha:    "Isha"
+};
+
+let timings = {};
+let adhanEnabled = false;
+let played = {};
+
+/* ==============================
+   SAAT & TARİH
+============================== */
+
+function updateClockAndDate() {
+  const now = new Date();
+  document.getElementById("clock").textContent =
+    now.toLocaleTimeString("nl-NL",{hour12:false});
+  document.getElementById("dateDisplay").textContent =
+    now.toLocaleDateString("nl-NL",{weekday:"long",year:"numeric",month:"long",day:"numeric"});
+}
+setInterval(updateClockAndDate,1000);
+updateClockAndDate();
+
+/* ==============================
+   VAKİTLERİ ÇEK
+============================== */
+
+function fetchTimings() {
+  const url = `https://api.aladhan.com/v1/timingsByCity?city=${CITY}&country=${COUNTRY}&method=${METHOD}`;
+  fetch(url)
+    .then(r => r.json())
+    .then(j => {
+      timings = j.data.timings;
+      buildGrid();
+    })
+    .catch(e => console.error("API error:", e));
+}
+
+/* ==============================
+   GRID OLUŞTUR
+============================== */
+
+function buildGrid() {
+  const grid = document.getElementById("prayerGrid");
+  grid.innerHTML = "";
+
+  if(!timings) return;
+
+  displayOrder.forEach(key => {
+    const raw = timings[key];
+    if(!raw) return;
+    const timeStr = raw.split(" ")[0];
+
+    const card = document.createElement("div");
+    card.className = "card";
+    card.dataset.key = key;
+
+    let extra = "";
+    if(key === "Sunrise") extra = "Güneş doğuşu";
+
+    card.innerHTML = `
+      <div class="card-name">${namesNL[key]}</div>
+      <div class="card-time">${timeStr}</div>
+      <div class="card-extra">${extra}</div>
+    `;
+
+    grid.appendChild(card);
+  });
+}
+
+/* ==============================
+   SONRAKİ NAMAZ
+============================== */
+
+function getNextPrayer() {
+  if (!timings || !timings.Fajr) return null;
+
+  const now = new Date();
+  let next = null;
+
+  prayerOrder.forEach(key => {
+    const raw = timings[key];
+    if(!raw) return;
+    const timeStr = raw.split(" ")[0];
+    if(!timeStr.includes(":")) return;
+    const [h,m] = timeStr.split(":").map(Number);
+
+    const t = new Date(now.getFullYear(), now.getMonth(), now.getDate(), h, m);
+
+    if(t > now && (!next || t < next.time)) {
+      next = { name: key, time: t };
+    }
+  });
+
+  return next;
+}
+
+/* ==============================
+   GERİ SAYIM FORMAT
+============================== */
+
+function formatDiff(ms) {
+  if (ms <= 0) return "Nu";
+  const s = Math.floor(ms / 1000);
+  if (s < 60) return s + " sec";
+
+  const m = Math.floor(s / 60);
+  const r = s % 60;
+  if (m < 60) return `${m} min ${r} sec`;
+
+  const h = Math.floor(m / 60);
+  const rm = m % 60;
+  return `${h} uur ${rm} min`;
+}
+
+/* ==============================
+   ARAYÜZ GÜNCELLE
+============================== */
+
+function updateUI() {
+  const next = getNextPrayer();
+  if(!next) return;
+
+  document.getElementById("nextPrayerName").textContent = namesNL[next.name];
+  document.getElementById("nextPrayerTime").textContent =
+    next.time.toLocaleTimeString("nl-NL",{hour:"2-digit",minute:"2-digit",hour12:false});
+
+  const diff = next.time - new Date();
+  document.getElementById("nextPrayerCountdown").textContent = formatDiff(diff);
+
+  // highlight
+  document.querySelectorAll(".card").forEach(c => c.classList.remove("highlight"));
+  const active = document.querySelector(`.card[data-key="${next.name}"]`);
+  if(active) active.classList.add("highlight");
+}
+setInterval(updateUI,1000);
+
+/* ==============================
+   EZAN ÇALMA
+============================== */
+
+function playAdhan() {
+  const audio = document.getElementById("adhanAudio");
+  audio.currentTime = 0;
+  audio.play().catch(e => console.log("Autoplay blocked:", e));
+}
+
+function checkAdhanTrigger() {
+  if(!adhanEnabled || !timings || !timings.Fajr) return;
+
+  const nowHM = new Date().toLocaleTimeString("nl-NL",{hour:"2-digit",minute:"2-digit",hour12:false});
+
+  prayerOrder.forEach(key => {
+    const raw = timings[key];
+    if(!raw) return;
+    let t = raw.split(" ")[0];
+    if(!t.includes(":")) return;
+    t = t.slice(0,5);
+
+    if(t === nowHM && !played[key]) {
+      played[key] = true;
+      playAdhan();
+    }
+  });
+}
+setInterval(checkAdhanTrigger,1000);
+
+/* ==============================
+   BUTON
+============================== */
+
+document.getElementById("playTestBtn").addEventListener("click", () => {
+  adhanEnabled = true;
+  playAdhan(); // test
+});
+
+/* ==============================
+   START
+============================== */
+
+fetchTimings();
+</script>
+
+</body>
+</html>
+
