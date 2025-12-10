@@ -7,7 +7,7 @@
 
   <style>
 
-      /* Bu WebSitesi Talha Yıldız Tarafından AbanGroup için yapılmıştır. */
+    * Bu WebSitesi Talha Yıldız Tarafından AbanGroup için yapılmıştır. */
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
@@ -30,7 +30,6 @@
     }
 
     /* Top bar */
-
     .topbar {
       display: flex;
       justify-content: space-between;
@@ -64,7 +63,6 @@
     }
 
     /* Header */
-
     .header {
       display: flex;
       justify-content: space-between;
@@ -96,7 +94,6 @@
     }
 
     /* Layout body: left big, right grid */
-
     .main-layout {
       display: grid;
       grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
@@ -115,7 +112,6 @@
     }
 
     /* Next panel */
-
     .next-panel {
       flex: 1;
       background: linear-gradient(135deg, rgba(33,230,184,0.12), rgba(5,8,30,0.95));
@@ -170,7 +166,6 @@
     }
 
     /* Grid on the right */
-
     .grid-panel {
       background: rgba(255,255,255,0.03);
       border-radius: 20px;
@@ -277,7 +272,6 @@
 <div class="container">
 
   <!-- Top bar -->
-
   <div class="topbar">
     <div class="topbar-left">
       <div class="top-dot"></div>
@@ -287,7 +281,6 @@
   </div>
 
   <!-- Header -->
-
   <header class="header">
     <div>
       <div class="location">Rotterdam</div>
@@ -300,7 +293,6 @@
   </header>
 
   <!-- Main layout -->
-
   <section class="main-layout">
 
     <!-- Left: next prayer & button -->
@@ -317,6 +309,8 @@
       <div>
         <button class="btn" id="playTestBtn">Ezan test / geluid inschakelen</button>
         <div class="hint">
+          Klik één keer om het geluid toe te staan. De ezan wordt dan automatisch
+          afgespeeld op het juiste tijdstip.
         </div>
       </div>
     </div>
@@ -330,11 +324,9 @@
   </section>
 
   <!-- Logo bottom center -->
-
   <div class="logo-box">
-    
-    <img src="abanlogo.png" alt="Aban Group logo">
-
+    <!-- Kendi logonu bu src'ye göre koyacaksın -->
+    <img src="AbanGroup.png" alt="Aban Group logo">
   </div>
 
 </div>
@@ -345,19 +337,17 @@
 </audio>
 
 <script>
-
 /* ==============================
    KONFİG
 ============================== */
-
 const CITY     = "Rotterdam";
 const COUNTRY  = "Netherlands";
 const METHOD   = 13;
 
 // Ezan çalınacak asıl vakitler
-const prayerOrder = ["Fajr","Dhuhr","Asr","Maghrib","Isha"];
+const prayerOrder   = ["Fajr","Dhuhr","Asr","Maghrib","Isha"];
 // Ekranda gösterilecek kart sırası (güneş doğuşu dahil)
-const displayOrder = ["Fajr","Sunrise","Dhuhr","Asr","Maghrib","Isha"];
+const displayOrder  = ["Fajr","Sunrise","Dhuhr","Asr","Maghrib","Isha"];
 
 const namesNL = {
   Fajr:    "Fajr",
@@ -368,14 +358,13 @@ const namesNL = {
   Isha:    "Isha"
 };
 
-let timings = {};
-let adhanEnabled = false;
-let played = {};
+let timings       = {};
+let adhanEnabled  = false;
+let played        = {};
 
 /* ==============================
    SAAT & TARİH
 ============================== */
-
 function updateClockAndDate() {
   const now = new Date();
   document.getElementById("clock").textContent =
@@ -387,24 +376,27 @@ setInterval(updateClockAndDate,1000);
 updateClockAndDate();
 
 /* ==============================
-   VAKİTLERİ ÇEK
+   VAKİTLERİ ÇEK (CORS PROXY İLE)
 ============================== */
-
 function fetchTimings() {
-  const url = `https://api.aladhan.com/v1/timingsByCity?city=${CITY}&country=${COUNTRY}&method=${METHOD}`;
-  fetch(url)
+  const baseUrl = `https://api.aladhan.com/v1/timingsByCity?city=${CITY}&country=${COUNTRY}&method=${METHOD}`;
+  // CORS engelini aşmak için public proxy kullanıyoruz
+  const proxiedUrl = "https://corsproxy.io/?" + encodeURIComponent(baseUrl);
+
+  fetch(proxiedUrl)
     .then(r => r.json())
     .then(j => {
       timings = j.data.timings;
       buildGrid();
     })
-    .catch(e => console.error("API error:", e));
+    .catch(e => {
+      console.error("API error:", e);
+    });
 }
 
 /* ==============================
    GRID OLUŞTUR
 ============================== */
-
 function buildGrid() {
   const grid = document.getElementById("prayerGrid");
   grid.innerHTML = "";
@@ -436,7 +428,6 @@ function buildGrid() {
 /* ==============================
    SONRAKİ NAMAZ
 ============================== */
-
 function getNextPrayer() {
   if (!timings || !timings.Fajr) return null;
 
@@ -463,7 +454,6 @@ function getNextPrayer() {
 /* ==============================
    GERİ SAYIM FORMAT
 ============================== */
-
 function formatDiff(ms) {
   if (ms <= 0) return "Nu";
   const s = Math.floor(ms / 1000);
@@ -481,7 +471,6 @@ function formatDiff(ms) {
 /* ==============================
    ARAYÜZ GÜNCELLE
 ============================== */
-
 function updateUI() {
   const next = getNextPrayer();
   if(!next) return;
@@ -503,7 +492,6 @@ setInterval(updateUI,1000);
 /* ==============================
    EZAN ÇALMA
 ============================== */
-
 function playAdhan() {
   const audio = document.getElementById("adhanAudio");
   audio.currentTime = 0;
@@ -533,7 +521,6 @@ setInterval(checkAdhanTrigger,1000);
 /* ==============================
    BUTON
 ============================== */
-
 document.getElementById("playTestBtn").addEventListener("click", () => {
   adhanEnabled = true;
   playAdhan(); // test
@@ -542,7 +529,6 @@ document.getElementById("playTestBtn").addEventListener("click", () => {
 /* ==============================
    START
 ============================== */
-
 fetchTimings();
 </script>
 
