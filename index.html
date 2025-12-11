@@ -5,9 +5,8 @@
   <title>Gebedstijden - Rotterdam</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  
   <style>
-    // Bu websitesi talha yıldız tarafından AbanGroup için oluşturulmuştur
+    // Bu websitesi talha yıldız tarafından AbanGroup Adına yapılmıştır.
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
@@ -115,7 +114,6 @@
     }
 
     /* Next panel */
-    
     .next-panel {
       flex: 1;
       background: linear-gradient(135deg, rgba(33,230,184,0.12), rgba(5,8,30,0.95));
@@ -336,7 +334,7 @@
   <!-- Logo bottom center -->
   
   <div class="logo-box">
-    <img src="abanlogo.png" alt="Aban Group logo">
+    <img src="AbanGroup.png" alt="Aban Group logo">
   </div>
 
 </div>
@@ -357,10 +355,8 @@ const CITY     = "Rotterdam";
 const COUNTRY  = "Netherlands";
 const METHOD   = 13;
 
-// Ezan çalınacak asıl vakitler
-const prayerOrder   = ["Fajr","Dhuhr","Asr","Maghrib","Isha"];
-// Ekranda gösterilecek kart sırası (güneş doğuşu dahil)
-const displayOrder  = ["Fajr","Sunrise","Dhuhr","Asr","Maghrib","Isha"];
+const prayerOrder  = ["Fajr","Dhuhr","Asr","Maghrib","Isha"];
+const displayOrder = ["Fajr","Sunrise","Dhuhr","Asr","Maghrib","Isha"];
 
 const namesNL = {
   Fajr:    "Fajr",
@@ -371,10 +367,11 @@ const namesNL = {
   Isha:    "Isha"
 };
 
-let timings          = {};
-let adhanEnabled     = false;
-let played           = {};
-let lastFetchedDate  = null;
+let timings         = {};
+let adhanEnabled    = false;
+let played          = {};
+let scheduleDate    = null;   // şu anda gösterilen gün
+let isFetching      = false;
 
 /* ==============================
    SAAT & TARİH
@@ -384,43 +381,70 @@ function updateClockAndDate() {
   const now = new Date();
   document.getElementById("clock").textContent =
     now.toLocaleTimeString("nl-NL",{hour12:false});
+
+  const d = scheduleDate || now;
   document.getElementById("dateDisplay").textContent =
-    now.toLocaleDateString("nl-NL",{weekday:"long",year:"numeric",month:"long",day:"numeric"});
+    d.toLocaleDateString("nl-NL",{weekday:"long",year:"numeric",month:"long",day:"numeric"});
 }
-setInterval(updateClockAndDate,1000);
+setInterval(updateClockAndDate, 1000);
 updateClockAndDate();
 
 /* ==============================
-   VAKİTLERİ ÇEK (CORS PROXY İLE)
+   API URL (belirli bir gün için)
 ============================== */
   
-function fetchTimings() {
-  const baseUrl   = `https://api.aladhan.com/v1/timingsByCity?city=${CITY}&country=${COUNTRY}&method=${METHOD}`;
-  const proxiedUrl = "https://corsproxy.io/?" + encodeURIComponent(baseUrl);
-
-  fetch(proxiedUrl)
-    .then(r => r.json())
-    .then(j => {
-      timings = j.data.timings;
-      lastFetchedDate = new Date().toDateString();
-      played = {};             // yeni güne reset
-      buildGrid();
-      updateUI();              // ekrana hemen yansıt
-    })
-    .catch(e => {
-      console.error("API error:", e);
-    });
+function buildApiUrl(date) {
+  const d  = date || new Date();
+  const dd = String(d.getDate()).padStart(2,"0");
+  const mm = String(d.getMonth()+1).padStart(2,"0");
+  const yy = d.getFullYear();
+  const base = `https://api.aladhan.com/v1/timingsByCity/${dd}-${mm}-${yy}?city=${CITY}&country=${COUNTRY}&method=${METHOD}`;
+  return "https://corsproxy.io/?" + encodeURIComponent(base);
 }
 
 /* ==============================
-   GÜN DEĞİŞİNCE OTOMATİK YENİLE
+   VAKİTLERİ ÇEK (belirli gün)
 ============================== */
   
-function checkDayRollover() {
-  if (!lastFetchedDate) return;
-  const todayStr = new Date().toDateString();
-  if (todayStr !== lastFetchedDate) {
-    fetchTimings();
+function fetchTimingsFor(date) {
+  if (isFetching) return;
+  isFetching = true;
+
+  scheduleDate = date || new Date();
+  const url = buildApiUrl(scheduleDate);
+
+  fetch(url)
+    .then(r => r.json())
+    .then(j => {
+      timings = j.data.timings;
+      played  = {}; // yeni gün, hepsini sıfırla
+      buildGrid();
+      updateUI();
+    })
+    .catch(e => console.error("API error:", e))
+    .finally(() => { isFetching = false; });
+}
+
+/* ==============================
+   GÜN BİTTİ Mİ? (Isha’dan sonra)
+============================== */
+  
+function checkScheduleRollover() {
+  if (!scheduleDate || !timings || !timings.Isha) return;
+
+  const now = new Date();
+
+  const d = scheduleDate;
+  const ishaStr = timings.Isha.split(" ")[0];
+  if (!ishaStr.includes(":")) return;
+  const [h, m] = ishaStr.split(":").map(Number);
+
+  const ishaTime = new Date(d.getFullYear(), d.getMonth(), d.getDate(), h, m);
+
+  // Eğer şu an, gösterilen günün Isha vaktinden sonra ise → ertesi güne geç
+  if (now > ishaTime) {
+    const tomorrow = new Date(d.getTime() + 24*60*60*1000);
+    fetchTimingsFor(tomorrow);
   }
 }
 
@@ -431,12 +455,11 @@ function checkDayRollover() {
 function buildGrid() {
   const grid = document.getElementById("prayerGrid");
   grid.innerHTML = "";
-
-  if(!timings) return;
+  if (!timings) return;
 
   displayOrder.forEach(key => {
     const raw = timings[key];
-    if(!raw) return;
+    if (!raw) return;
     const timeStr = raw.split(" ")[0];
 
     const card = document.createElement("div");
@@ -444,7 +467,7 @@ function buildGrid() {
     card.dataset.key = key;
 
     let extra = "";
-    if(key === "Sunrise") extra = "Güneş doğuşu";
+    if (key === "Sunrise") extra = "Güneş doğuşu";
 
     card.innerHTML = `
       <div class="card-name">${namesNL[key]}</div>
@@ -461,21 +484,23 @@ function buildGrid() {
 ============================== */
   
 function getNextPrayer() {
-  if (!timings || !timings.Fajr) return null;
+  if (!timings || !timings.Fajr || !scheduleDate) return null;
 
   const now = new Date();
-  let next = null;
+  const d   = scheduleDate;
+  let next  = null;
 
   prayerOrder.forEach(key => {
     const raw = timings[key];
-    if(!raw) return;
+    if (!raw) return;
+
     const timeStr = raw.split(" ")[0];
-    if(!timeStr.includes(":")) return;
+    if (!timeStr.includes(":")) return;
     const [h,m] = timeStr.split(":").map(Number);
 
-    const t = new Date(now.getFullYear(), now.getMonth(), now.getDate(), h, m);
+    const t = new Date(d.getFullYear(), d.getMonth(), d.getDate(), h, m);
 
-    if(t > now && (!next || t < next.time)) {
+    if (t > now && (!next || t < next.time)) {
       next = { name: key, time: t };
     }
   });
@@ -506,43 +531,33 @@ function formatDiff(ms) {
 ============================== */
   
 function updateUI() {
-  if (!timings || !timings.Fajr) return;
+  if (!timings || !timings.Fajr || !scheduleDate) return;
 
   const next = getNextPrayer();
+  const nameEl = document.getElementById("nextPrayerName");
+  const timeEl = document.getElementById("nextPrayerTime");
+  const cdEl   = document.getElementById("nextPrayerCountdown");
 
-  if(!next) {
-    // Günün bütün vakitleri bittiğinde boş görünmesin
-    
-    document.getElementById("nextPrayerName").textContent =
-      "Alle gebeden van vandaag zijn voorbij";
-    document.getElementById("nextPrayerTime").textContent = "";
-    document.getElementById("nextPrayerCountdown").textContent =
-      "Nieuwe tijden worden na middernacht automatisch geladen.";
-
-    // highlight temizle
-    
+  if (!next) {
+    // Bugünkü (veya gösterilen günün) bütün vakitleri bitmişse
+    nameEl.textContent = "Alle gebeden zijn voorbij";
+    timeEl.textContent = "";
+    cdEl.textContent   = "Eerstvolgende gebeden worden weergegeven zodra ze beschikbaar zijn.";
     document.querySelectorAll(".card").forEach(c => c.classList.remove("highlight"));
     return;
   }
 
-  document.getElementById("nextPrayerName").textContent = namesNL[next.name];
-  document.getElementById("nextPrayerTime").textContent =
+  nameEl.textContent = namesNL[next.name];
+  timeEl.textContent =
     next.time.toLocaleTimeString("nl-NL",{hour:"2-digit",minute:"2-digit",hour12:false});
 
   const diff = next.time - new Date();
-  document.getElementById("nextPrayerCountdown").textContent = formatDiff(diff);
+  cdEl.textContent = formatDiff(diff);
 
   document.querySelectorAll(".card").forEach(c => c.classList.remove("highlight"));
   const active = document.querySelector(`.card[data-key="${next.name}"]`);
-  if(active) active.classList.add("highlight");
+  if (active) active.classList.add("highlight");
 }
-
-// her saniye hem UI’yi hem günü kontrol et
-  
-setInterval(() => {
-  updateUI();
-  checkDayRollover();
-}, 1000);
 
 /* ==============================
    EZAN ÇALMA
@@ -555,24 +570,25 @@ function playAdhan() {
 }
 
 function checkAdhanTrigger() {
-  if(!adhanEnabled || !timings || !timings.Fajr) return;
+  if (!adhanEnabled || !timings || !timings.Fajr) return;
 
-  const nowHM = new Date().toLocaleTimeString("nl-NL",{hour:"2-digit",minute:"2-digit",hour12:false});
+  const nowHM = new Date().toLocaleTimeString("nl-NL",{
+    hour:"2-digit", minute:"2-digit", hour12:false
+  });
 
   prayerOrder.forEach(key => {
     const raw = timings[key];
-    if(!raw) return;
+    if (!raw) return;
     let t = raw.split(" ")[0];
-    if(!t.includes(":")) return;
+    if (!t.includes(":")) return;
     t = t.slice(0,5);
 
-    if(t === nowHM && !played[key]) {
+    if (t === nowHM && !played[key]) {
       played[key] = true;
       playAdhan();
     }
   });
 }
-setInterval(checkAdhanTrigger,1000);
 
 /* ==============================
    BUTON
@@ -584,14 +600,25 @@ document.getElementById("playTestBtn").addEventListener("click", () => {
 });
 
 /* ==============================
-   START
+   INTERVALLER & START
 ============================== */
   
-fetchTimings();
+setInterval(() => {
+  updateUI();
+  checkScheduleRollover();
+}, 1000);
+
+setInterval(checkAdhanTrigger, 1000);
+
+// Başlangıçta bugünün vakitlerini yükle
+  
+fetchTimingsFor(new Date());
 </script>
 
 </body>
 </html>
+
+
 
 
 
