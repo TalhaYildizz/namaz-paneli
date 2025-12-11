@@ -469,8 +469,7 @@ function buildGrid() {
     card.className = "card";
     card.dataset.key = key;
 
-    let extra = "";
-    if (key === "Sunrise") extra = "Güneş doğuşu";
+   
 
     card.innerHTML = `
       <div class="card-name">${namesNL[key]}</div>
@@ -620,6 +619,7 @@ fetchTimingsFor(new Date());
 
 </body>
 </html>
+
 
 
 
