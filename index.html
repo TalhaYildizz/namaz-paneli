@@ -7,8 +7,8 @@
 
   <style>
     
-    // Bu websitesi talha yıldız tarafından AbanGroup Adına yapılmıştır.
-    
+    /* Bu websitesi Talha Yıldız tarafından AbanGroup adına yapılmıştır. */
+
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
@@ -31,7 +31,7 @@
     }
 
     /* Top bar */
-    
+
     .topbar {
       display: flex;
       justify-content: space-between;
@@ -64,8 +64,17 @@
       opacity: 0.7;
     }
 
+    /* Bismillah */
+    .bismillah {
+      margin-top: 10px;
+      text-align: center;
+      font-size: 1.8rem;
+      letter-spacing: 2px;
+      color: #f9f58b;
+    }
+
     /* Header */
-    
+
     .header {
       display: flex;
       justify-content: space-between;
@@ -97,7 +106,7 @@
     }
 
     /* Layout body: left big, right grid */
-    
+
     .main-layout {
       display: grid;
       grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
@@ -116,7 +125,7 @@
     }
 
     /* Next panel */
-    
+
     .next-panel {
       flex: 1;
       background: linear-gradient(135deg, rgba(33,230,184,0.12), rgba(5,8,30,0.95));
@@ -171,7 +180,7 @@
     }
 
     /* Grid on the right */
-    
+
     .grid-panel {
       background: rgba(255,255,255,0.03);
       border-radius: 20px;
@@ -259,7 +268,7 @@
     }
 
     /* Logo bottom center */
-    
+
     .logo-box {
       margin-top: 32px;
       display: flex;
@@ -287,6 +296,10 @@
     </div>
     <div class="top-right">AbanGroup • Den Haag</div>
   </div>
+
+  <!-- Bismillah -->
+  
+  <div class="bismillah">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
 
   <!-- Header -->
   
@@ -319,9 +332,7 @@
 
       <div>
         <button class="btn" id="playTestBtn">Ezan test / geluid inschakelen</button>
-        <div class="hint">
-          
-        </div>
+        <div class="hint"></div>
       </div>
     </div>
 
@@ -362,19 +373,19 @@ const prayerOrder  = ["Fajr","Dhuhr","Asr","Maghrib","Isha"];
 const displayOrder = ["Fajr","Sunrise","Dhuhr","Asr","Maghrib","Isha"];
 
 const namesNL = {
-  Fajr:    "Fajr/İmsak",
-  Sunrise: "Shams/Güneş",
-  Dhuhr:   "Dhuhr/Öğle ",
-  Asr:     "Asr/İkindi",
-  Maghrib: "Maghrib/Akşam",
-  Isha:    "Isha/Yatsı"
+  Fajr:    "Fajr / İmsak",
+  Sunrise: "Shams / Güneş",
+  Dhuhr:   "Dhuhr / Öğle",
+  Asr:     "Asr / İkindi",
+  Maghrib: "Maghrib / Akşam",
+  Isha:    "Isha / Yatsı"
 };
 
-let timings         = {};
-let adhanEnabled    = false;
-let played          = {};
-let scheduleDate    = null;   // şu anda gösterilen gün
-let isFetching      = false;
+let timings      = {};
+let adhanEnabled = false;
+let played       = {};
+let scheduleDate = null;   // şu anda gösterilen gün
+let isFetching   = false;
 
 /* ==============================
    SAAT & TARİH
@@ -436,12 +447,11 @@ function checkScheduleRollover() {
   if (!scheduleDate || !timings || !timings.Isha) return;
 
   const now = new Date();
+  const d   = scheduleDate;
 
-  const d = scheduleDate;
   const ishaStr = timings.Isha.split(" ")[0];
   if (!ishaStr.includes(":")) return;
   const [h, m] = ishaStr.split(":").map(Number);
-
   const ishaTime = new Date(d.getFullYear(), d.getMonth(), d.getDate(), h, m);
 
   // Eğer şu an, gösterilen günün Isha vaktinden sonra ise → ertesi güne geç
@@ -469,7 +479,8 @@ function buildGrid() {
     card.className = "card";
     card.dataset.key = key;
 
-   
+    let extra = "";
+    if (key === "Sunrise") extra = "Güneş doğuşu";
 
     card.innerHTML = `
       <div class="card-name">${namesNL[key]}</div>
@@ -541,7 +552,6 @@ function updateUI() {
   const cdEl   = document.getElementById("nextPrayerCountdown");
 
   if (!next) {
-    // Bugünkü (veya gösterilen günün) bütün vakitleri bitmişse
     nameEl.textContent = "Alle gebeden zijn voorbij";
     timeEl.textContent = "";
     cdEl.textContent   = "Eerstvolgende gebeden worden weergegeven zodra ze beschikbaar zijn.";
@@ -619,6 +629,8 @@ fetchTimingsFor(new Date());
 
 </body>
 </html>
+
+
 
 
 
