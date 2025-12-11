@@ -2,11 +2,13 @@
 <html lang="nl">
 <head>
   <meta charset="UTF-8" />
-  <title>Gebedstijden - Rotterdam</title>
+  <title>Gebedstijden - Den Haag</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <style>
+    
     // Bu websitesi talha yıldız tarafından AbanGroup Adına yapılmıştır.
+    
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
@@ -114,6 +116,7 @@
     }
 
     /* Next panel */
+    
     .next-panel {
       flex: 1;
       background: linear-gradient(135deg, rgba(33,230,184,0.12), rgba(5,8,30,0.95));
@@ -282,14 +285,14 @@
       <div class="top-dot"></div>
       <div class="top-title">Gebedstijden Paneel</div>
     </div>
-    <div class="top-right">Aban Group • Rotterdam</div>
+    <div class="top-right">AbanGroup • Den Haag</div>
   </div>
 
   <!-- Header -->
   
   <header class="header">
     <div>
-      <div class="location">Rotterdam</div>
+      <div class="location">Den Haag</div>
       <div class="date" id="dateDisplay"></div>
     </div>
     <div>
@@ -351,7 +354,7 @@
    KONFİG
 ============================== */
   
-const CITY     = "Rotterdam";
+const CITY     = "Den Haag";
 const COUNTRY  = "Netherlands";
 const METHOD   = 13;
 
@@ -359,8 +362,8 @@ const prayerOrder  = ["Fajr","Dhuhr","Asr","Maghrib","Isha"];
 const displayOrder = ["Fajr","Sunrise","Dhuhr","Asr","Maghrib","Isha"];
 
 const namesNL = {
-  Fajr:    "Fajr",
-  Sunrise: "Zonsopgang",
+  Fajr:    "Fajr/",
+  Sunrise: "Zonsopgang/shams",
   Dhuhr:   "Dhuhr",
   Asr:     "Asr",
   Maghrib: "Maghrib",
@@ -617,6 +620,7 @@ fetchTimingsFor(new Date());
 
 </body>
 </html>
+
 
 
 
