@@ -1,14 +1,16 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="nl">
 <head>
   <meta charset="UTF-8" />
   <title>Gebedstijden - Den Haag</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+  <!-- ARAPÇA KUR’AN HATTI FONTS -->
+  
+  <link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&display=swap" rel="stylesheet">
+
   <style>
     
-    /* Bu websitesi Talha Yıldız tarafından AbanGroup adına yapılmıştır. */
-
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
@@ -30,8 +32,24 @@
       gap: 22px;
     }
 
-    /* Top bar */
+    /* ------------------ BİSMİLLAH ------------------ */
 
+    .bismillah {
+      margin-top: 8px;
+      text-align: center;
+      font-family: "Amiri Quran", serif;
+      font-size: 2.9rem;
+      color: #21e6b8;
+      font-weight: 400;
+      letter-spacing: 1px;
+      text-shadow:
+        0 0 6px rgba(33,230,184,0.9),
+        0 0 14px rgba(33,230,184,0.7),
+        0 0 30px rgba(0,0,0,0.8);
+    }
+
+    /* TOP BAR */
+    
     .topbar {
       display: flex;
       justify-content: space-between;
@@ -41,14 +59,9 @@
       background: rgba(0,0,0,0.35);
       border: 1px solid rgba(255,255,255,0.08);
     }
-    .topbar-left {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
+    .topbar-left { display: flex; align-items: center; gap: 10px; }
     .top-dot {
-      width: 10px;
-      height: 10px;
+      width: 10px; height: 10px;
       border-radius: 999px;
       background: #21e6b8;
       box-shadow: 0 0 10px #21e6b8;
@@ -59,22 +72,9 @@
       text-transform: uppercase;
       opacity: 0.8;
     }
-    .top-right {
-      font-size: 0.85rem;
-      opacity: 0.7;
-    }
+    .top-right { font-size: 0.85rem; opacity: 0.7; }
 
-    /* Bismillah */
-    .bismillah {
-      margin-top: 10px;
-      text-align: center;
-      font-size: 1.8rem;
-      letter-spacing: 2px;
-      color: #f9f58b;
-    }
-
-    /* Header */
-
+    /* HEADER */
     .header {
       display: flex;
       justify-content: space-between;
@@ -82,50 +82,33 @@
       flex-wrap: wrap;
       gap: 12px;
     }
-
     .location {
       font-size: 2.3rem;
       font-weight: 700;
       letter-spacing: 2px;
     }
-    .date {
-      opacity: 0.85;
-      font-size: 1rem;
-      margin-top: 4px;
-    }
+    .date { opacity: 0.85; font-size: 1rem; margin-top: 4px; }
     .clock {
       font-size: 3.4rem;
       font-weight: 700;
       letter-spacing: 2px;
       text-align: right;
     }
-    .tz-label {
-      text-align: right;
-      font-size: 0.9rem;
-      opacity: 0.65;
-    }
+    .tz-label { text-align: right; font-size: 0.9rem; opacity: 0.65; }
 
-    /* Layout body: left big, right grid */
-
+    /* LAYOUT */
     .main-layout {
       display: grid;
       grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
       gap: 22px;
-      align-items: stretch;
     }
-
     @media (max-width: 900px) {
       .main-layout { grid-template-columns: 1fr; }
     }
 
-    .left-column {
-      display: flex;
-      flex-direction: column;
-      gap: 18px;
-    }
+    .left-column { display: flex; flex-direction: column; gap: 18px; }
 
-    /* Next panel */
-
+    /* NEXT PANEL */
     .next-panel {
       flex: 1;
       background: linear-gradient(135deg, rgba(33,230,184,0.12), rgba(5,8,30,0.95));
@@ -138,145 +121,86 @@
       justify-content: space-between;
       gap: 18px;
     }
-
-    .next-label {
-      opacity: 0.8;
-      letter-spacing: 2px;
-      font-size: 0.9rem;
-      text-transform: uppercase;
-    }
-    .next-name {
-      font-size: 2rem;
-      font-weight: 700;
-      margin-top: 4px;
-    }
-    .next-time {
-      font-size: 1.6rem;
-      opacity: 0.9;
-    }
-    .next-countdown {
-      font-size: 1.2rem;
-      opacity: 0.9;
-    }
+    .next-label { opacity: 0.8; font-size: 0.9rem; letter-spacing: 2px; text-transform: uppercase; }
+    .next-name { font-size: 2rem; font-weight: 700; margin-top: 4px; }
+    .next-time { font-size: 1.6rem; opacity: 0.9; }
+    .next-countdown { font-size: 1.2rem; opacity: 0.9; }
 
     .btn {
       padding: 12px 22px;
       border-radius: 999px;
       background: #21e6b8;
       color: #000;
+      font-weight: 700;
       border: none;
       cursor: pointer;
-      font-weight: 700;
       font-size: 0.95rem;
-      align-self: flex-start;
       transition: 0.2s;
     }
     .btn:hover { background: #39ffd0; }
 
-    .hint {
-      font-size: 0.8rem;
-      opacity: 0.7;
-      margin-top: -8px;
-    }
-
-    /* Grid on the right */
-
+    /* GRID */
     .grid-panel {
       background: rgba(255,255,255,0.03);
       border-radius: 20px;
-      padding: 18px 20px 22px;
+      padding: 20px;
       border: 1px solid rgba(255,255,255,0.06);
       box-shadow: 0 0 18px rgba(0,0,0,0.4);
     }
-
     .grid-title {
       font-size: 0.95rem;
-      opacity: 0.8;
       text-transform: uppercase;
       letter-spacing: 2px;
+      opacity: 0.8;
       margin-bottom: 14px;
     }
-
     .grid {
       display: grid;
       grid-template-columns: repeat(3, minmax(0,1fr));
       gap: 14px;
     }
-    @media (max-width: 1100px) {
-      .grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
-    }
     @media (max-width: 700px) {
-      .grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
+      .grid { grid-template-columns: repeat(2, 1fr); }
     }
 
     .card {
-      position: relative;
       background: radial-gradient(circle at top, rgba(255,255,255,0.10), rgba(2,3,12,0.95));
-      padding: 16px 14px 18px;
+      padding: 18px;
       border-radius: 16px;
       text-align: center;
       border: 1px solid rgba(255,255,255,0.06);
-      overflow: hidden;
       transition: 0.25s ease;
-    }
-
-    .card::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      background: radial-gradient(circle at top, rgba(255,255,255,0.12), transparent 60%);
-      opacity: 0.3;
-      pointer-events: none;
+      position: relative;
     }
 
     .card-name {
       font-size: 0.9rem;
-      letter-spacing: 2px;
       text-transform: uppercase;
+      letter-spacing: 2px;
       opacity: 0.85;
       margin-bottom: 8px;
-      position: relative;
-      z-index: 1;
     }
 
     .card-time {
-      font-size: 1.7rem;
+      font-size: 1.8rem;
       font-weight: 700;
-      position: relative;
-      z-index: 1;
-    }
-
-    .card-extra {
-      font-size: 0.8rem;
-      opacity: 0.75;
-      margin-top: 4px;
-      position: relative;
-      z-index: 1;
     }
 
     .card.highlight {
       border-color: #21e6b8;
       box-shadow: 0 0 20px rgba(33,230,184,0.75);
       transform: translateY(-3px) scale(1.03);
-      animation: pulse 1.8s ease-in-out infinite;
     }
 
-    @keyframes pulse {
-      0%   { box-shadow: 0 0 16px rgba(33,230,184,0.6); }
-      50%  { box-shadow: 0 0 28px rgba(33,230,184,1); }
-      100% { box-shadow: 0 0 16px rgba(33,230,184,0.6); }
-    }
-
-    /* Logo bottom center */
-
+    /* Logo */
     .logo-box {
       margin-top: 32px;
       display: flex;
       justify-content: center;
-      opacity: 0.7;
+      opacity: 0.8;
     }
     .logo-box img {
-      height: 130px;
+      height: 130px;   /* İSTEDİĞİN KADAR BÜYÜT */
       object-fit: contain;
       filter: drop-shadow(0 0 6px rgba(0,0,0,0.5));
     }
@@ -287,8 +211,10 @@
 <body>
 <div class="container">
 
-  <!-- Top bar -->
-  
+  <!-- BİSMİLLAH -->
+  <div class="bismillah">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
+
+  <!-- TOP BAR -->
   <div class="topbar">
     <div class="topbar-left">
       <div class="top-dot"></div>
@@ -297,12 +223,7 @@
     <div class="top-right">AbanGroup • Den Haag</div>
   </div>
 
-  <!-- Bismillah -->
-  
-  <div class="bismillah">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
-
-  <!-- Header -->
-  
+  <!-- HEADER -->
   <header class="header">
     <div>
       <div class="location">Den Haag</div>
@@ -314,12 +235,10 @@
     </div>
   </header>
 
-  <!-- Main layout -->
-  
+  <!-- MAIN LAYOUT -->
   <section class="main-layout">
 
-    <!-- Left: next prayer & button -->
-    
+    <!-- SOL TARAF -->
     <div class="left-column">
       <div class="next-panel">
         <div>
@@ -330,14 +249,10 @@
         <div class="next-countdown" id="nextPrayerCountdown">-</div>
       </div>
 
-      <div>
-        <button class="btn" id="playTestBtn">Ezan test / geluid inschakelen</button>
-        <div class="hint"></div>
-      </div>
+      <button class="btn" id="playTestBtn">Ezan test / geluid inschakelen</button>
     </div>
 
-    <!-- Right: grid of times -->
-    
+    <!-- SAĞ TARAF -->
     <div class="grid-panel">
       <div class="grid-title">Gebedstijden vandaag</div>
       <div class="grid" id="prayerGrid"></div>
@@ -345,26 +260,24 @@
 
   </section>
 
-  <!-- Logo bottom center -->
-  
+  <!-- LOGO -->
   <div class="logo-box">
-    <img src="abanlogo.png" alt="Aban Group logo">
+    <img src="abanlogo.png" alt="Aban Group">
   </div>
 
 </div>
 
-<!-- Ezan ses dosyası (MP3) -->
-  
+<!-- EZAN SES DOSYASI -->
 <audio id="adhanAudio" preload="auto">
   <source src="azan.mp3" type="audio/mpeg">
 </audio>
 
 <script>
-  
-/* ==============================
-   KONFİG
-============================== */
-  
+
+/* ===========================
+       KONFİG
+=========================== */
+
 const CITY     = "Den Haag";
 const COUNTRY  = "Netherlands";
 const METHOD   = 13;
@@ -382,15 +295,14 @@ const namesNL = {
 };
 
 let timings      = {};
-let adhanEnabled = false;
 let played       = {};
-let scheduleDate = null;   // şu anda gösterilen gün
-let isFetching   = false;
+let scheduleDate = null;
+let adhanEnabled = false;
 
-/* ==============================
-   SAAT & TARİH
-============================== */
-  
+/* ===========================
+       SAAT & TARİH
+=========================== */
+
 function updateClockAndDate() {
   const now = new Date();
   document.getElementById("clock").textContent =
@@ -401,13 +313,12 @@ function updateClockAndDate() {
     d.toLocaleDateString("nl-NL",{weekday:"long",year:"numeric",month:"long",day:"numeric"});
 }
 setInterval(updateClockAndDate, 1000);
-updateClockAndDate();
 
-/* ==============================
-   API URL (belirli bir gün için)
-============================== */
-  
-function buildApiUrl(date) {
+/* ===========================
+       API URL
+=========================== */
+
+function buildApiUrl(date){
   const d  = date || new Date();
   const dd = String(d.getDate()).padStart(2,"0");
   const mm = String(d.getMonth()+1).padStart(2,"0");
@@ -416,219 +327,175 @@ function buildApiUrl(date) {
   return "https://corsproxy.io/?" + encodeURIComponent(base);
 }
 
-/* ==============================
-   VAKİTLERİ ÇEK (belirli gün)
-============================== */
-  
-function fetchTimingsFor(date) {
-  if (isFetching) return;
-  isFetching = true;
+/* ===========================
+     VAKİTLERİ ÇEK
+=========================== */
 
+function fetchTimes(date){
   scheduleDate = date || new Date();
-  const url = buildApiUrl(scheduleDate);
 
-  fetch(url)
+  fetch(buildApiUrl(scheduleDate))
     .then(r => r.json())
     .then(j => {
       timings = j.data.timings;
-      played  = {}; // yeni gün, hepsini sıfırla
+      played = {};
       buildGrid();
       updateUI();
-    })
-    .catch(e => console.error("API error:", e))
-    .finally(() => { isFetching = false; });
+    });
 }
 
-/* ==============================
-   GÜN BİTTİ Mİ? (Isha’dan sonra)
-============================== */
-  
-function checkScheduleRollover() {
-  if (!scheduleDate || !timings || !timings.Isha) return;
-
-  const now = new Date();
-  const d   = scheduleDate;
-
-  const ishaStr = timings.Isha.split(" ")[0];
-  if (!ishaStr.includes(":")) return;
-  const [h, m] = ishaStr.split(":").map(Number);
-  const ishaTime = new Date(d.getFullYear(), d.getMonth(), d.getDate(), h, m);
-
-  // Eğer şu an, gösterilen günün Isha vaktinden sonra ise → ertesi güne geç
-  if (now > ishaTime) {
-    const tomorrow = new Date(d.getTime() + 24*60*60*1000);
-    fetchTimingsFor(tomorrow);
-  }
-}
-
-/* ==============================
-   GRID OLUŞTUR
-============================== */
-  
-function buildGrid() {
+function buildGrid(){
   const grid = document.getElementById("prayerGrid");
   grid.innerHTML = "";
-  if (!timings) return;
 
-  displayOrder.forEach(key => {
-    const raw = timings[key];
-    if (!raw) return;
-    const timeStr = raw.split(" ")[0];
+  displayOrder.forEach(k=>{
+    if(!timings[k]) return;
+
+    const t = timings[k].split(" ")[0];
 
     const card = document.createElement("div");
     card.className = "card";
-    card.dataset.key = key;
-
-    let extra = "";
-    if (key === "Sunrise") extra = "Güneş doğuşu";
+    card.dataset.key = k;
 
     card.innerHTML = `
-      <div class="card-name">${namesNL[key]}</div>
-      <div class="card-time">${timeStr}</div>
-      <div class="card-extra">${extra}</div>
+      <div class="card-name">${namesNL[k]}</div>
+      <div class="card-time">${t}</div>
     `;
-
     grid.appendChild(card);
   });
 }
 
-/* ==============================
-   SONRAKİ NAMAZ
-============================== */
-  
-function getNextPrayer() {
-  if (!timings || !timings.Fajr || !scheduleDate) return null;
+/* ===========================
+   SONRAKİ NAMAZ HESABI
+=========================== */
 
+function getNextPrayer(){
   const now = new Date();
-  const d   = scheduleDate;
-  let next  = null;
+  const d = scheduleDate;
 
-  prayerOrder.forEach(key => {
-    const raw = timings[key];
-    if (!raw) return;
+  let next = null;
 
-    const timeStr = raw.split(" ")[0];
-    if (!timeStr.includes(":")) return;
-    const [h,m] = timeStr.split(":").map(Number);
+  prayerOrder.forEach(k=>{
+    if(!timings[k]) return;
+
+    const tStr = timings[k].split(" ")[0];
+    const [h,m] = tStr.split(":").map(Number);
 
     const t = new Date(d.getFullYear(), d.getMonth(), d.getDate(), h, m);
 
-    if (t > now && (!next || t < next.time)) {
-      next = { name: key, time: t };
+    if(t > now && (!next || t < next.time)){
+      next = { name: k, time: t };
     }
   });
 
   return next;
 }
 
-/* ==============================
-   GERİ SAYIM FORMAT
-============================== */
-  
-function formatDiff(ms) {
-  if (ms <= 0) return "Nu";
-  const s = Math.floor(ms / 1000);
-  if (s < 60) return s + " sec";
-
-  const m = Math.floor(s / 60);
-  const r = s % 60;
-  if (m < 60) return `${m} min ${r} sec`;
-
-  const h = Math.floor(m / 60);
-  const rm = m % 60;
-  return `${h} uur ${rm} min`;
+function formatDiff(ms){
+  if(ms <= 0) return "Nu";
+  const s = Math.floor(ms/1000);
+  const m = Math.floor(s/60);
+  const h = Math.floor(m/60);
+  if(h > 0) return `${h} uur ${m%60} min`;
+  return `${m} min ${s%60} sec`;
 }
 
-/* ==============================
-   ARAYÜZ GÜNCELLE
-============================== */
-  
-function updateUI() {
-  if (!timings || !timings.Fajr || !scheduleDate) return;
-
+function updateUI(){
   const next = getNextPrayer();
+
   const nameEl = document.getElementById("nextPrayerName");
   const timeEl = document.getElementById("nextPrayerTime");
   const cdEl   = document.getElementById("nextPrayerCountdown");
 
-  if (!next) {
-    nameEl.textContent = "Alle gebeden zijn voorbij";
+  if(!next){
+    nameEl.textContent = "Alle gebeden voorbij";
     timeEl.textContent = "";
-    cdEl.textContent   = "Eerstvolgende gebeden worden weergegeven zodra ze beschikbaar zijn.";
-    document.querySelectorAll(".card").forEach(c => c.classList.remove("highlight"));
+    cdEl.textContent = "Nieuwe tijden worden geladen...";
     return;
   }
 
   nameEl.textContent = namesNL[next.name];
-  timeEl.textContent =
-    next.time.toLocaleTimeString("nl-NL",{hour:"2-digit",minute:"2-digit",hour12:false});
+  timeEl.textContent = next.time.toLocaleTimeString("nl-NL",{hour:"2-digit",minute:"2-digit"});
 
-  const diff = next.time - new Date();
-  cdEl.textContent = formatDiff(diff);
+  cdEl.textContent = formatDiff(next.time - new Date());
 
-  document.querySelectorAll(".card").forEach(c => c.classList.remove("highlight"));
+  document.querySelectorAll(".card").forEach(c=>c.classList.remove("highlight"));
   const active = document.querySelector(`.card[data-key="${next.name}"]`);
-  if (active) active.classList.add("highlight");
+  if(active) active.classList.add("highlight");
 }
 
-/* ==============================
-   EZAN ÇALMA
-============================== */
-  
-function playAdhan() {
+/* ===========================
+     GÜN ÇEVİRME (ISHA SONRASI)
+=========================== */
+
+function checkDayRollover(){
+  if(!timings.Isha) return;
+
+  const d = scheduleDate;
+  const [h,m] = timings.Isha.split(" ")[0].split(":").map(Number);
+  const ishaTime = new Date(d.getFullYear(), d.getMonth(), d.getDate(), h, m);
+
+  const now = new Date();
+  if(now > ishaTime){
+    const tomorrow = new Date(d.getTime() + 24*3600*1000);
+    fetchTimes(tomorrow);
+  }
+}
+
+/* ===========================
+     EZAN TETİĞİ
+=========================== */
+
+function playAdhan(){
   const audio = document.getElementById("adhanAudio");
   audio.currentTime = 0;
-  audio.play().catch(e => console.log("Autoplay blocked:", e));
+  audio.play().catch(()=>{});
 }
 
-function checkAdhanTrigger() {
-  if (!adhanEnabled || !timings || !timings.Fajr) return;
+function checkAdhan(){
+  if(!adhanEnabled) return;
 
-  const nowHM = new Date().toLocaleTimeString("nl-NL",{
-    hour:"2-digit", minute:"2-digit", hour12:false
-  });
+  const now = new Date();
+  const hm = now.toLocaleTimeString("nl-NL",{hour:"2-digit",minute:"2-digit"});
 
-  prayerOrder.forEach(key => {
-    const raw = timings[key];
-    if (!raw) return;
-    let t = raw.split(" ")[0];
-    if (!t.includes(":")) return;
-    t = t.slice(0,5);
-
-    if (t === nowHM && !played[key]) {
-      played[key] = true;
+  prayerOrder.forEach(k=>{
+    const t = timings[k]?.split(" ")[0]?.slice(0,5);
+    if(t === hm && !played[k]){
+      played[k] = true;
       playAdhan();
     }
   });
 }
 
-/* ==============================
-   BUTON
-============================== */
-  
-document.getElementById("playTestBtn").addEventListener("click", () => {
+/* ===========================
+     BUTON
+=========================== */
+
+document.getElementById("playTestBtn").addEventListener("click", ()=>{
   adhanEnabled = true;
-  playAdhan(); // test
+  playAdhan();
 });
 
-/* ==============================
-   INTERVALLER & START
-============================== */
-  
-setInterval(() => {
-  updateUI();
-  checkScheduleRollover();
-}, 1000);
+/* ===========================
+     LOOP
+=========================== */
 
-setInterval(checkAdhanTrigger, 1000);
+setInterval(updateUI, 1000);
+setInterval(checkAdhan, 1000);
+setInterval(checkDayRollover, 5000);
 
-// Başlangıçta bugünün vakitlerini yükle
-  
-fetchTimingsFor(new Date());
+/* ===========================
+     START
+=========================== */
+
+fetchTimes(new Date());
+
 </script>
 
 </body>
 </html>
+
+
 
 
 
