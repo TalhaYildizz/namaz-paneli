@@ -5,12 +5,10 @@
   <title>Gebedstijden - Den Haag</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- ARAPÇA KUR’AN HATTI FONTS -->
-  
+  <!-- Arapça hat fontu -->
   <link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&display=swap" rel="stylesheet">
 
   <style>
-    
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
@@ -32,8 +30,7 @@
       gap: 22px;
     }
 
-    /* ------------------ BİSMİLLAH ------------------ */
-
+    /* Bismillah */
     .bismillah {
       margin-top: 8px;
       text-align: center;
@@ -48,8 +45,7 @@
         0 0 30px rgba(0,0,0,0.8);
     }
 
-    /* TOP BAR */
-    
+    /* Top bar */
     .topbar {
       display: flex;
       justify-content: space-between;
@@ -74,7 +70,7 @@
     }
     .top-right { font-size: 0.85rem; opacity: 0.7; }
 
-    /* HEADER */
+    /* Header */
     .header {
       display: flex;
       justify-content: space-between;
@@ -96,7 +92,7 @@
     }
     .tz-label { text-align: right; font-size: 0.9rem; opacity: 0.65; }
 
-    /* LAYOUT */
+    /* Layout */
     .main-layout {
       display: grid;
       grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
@@ -108,7 +104,7 @@
 
     .left-column { display: flex; flex-direction: column; gap: 18px; }
 
-    /* NEXT PANEL */
+    /* Next panel */
     .next-panel {
       flex: 1;
       background: linear-gradient(135deg, rgba(33,230,184,0.12), rgba(5,8,30,0.95));
@@ -139,7 +135,7 @@
     }
     .btn:hover { background: #39ffd0; }
 
-    /* GRID */
+    /* Grid */
     .grid-panel {
       background: rgba(255,255,255,0.03);
       border-radius: 20px;
@@ -186,6 +182,12 @@
       font-weight: 700;
     }
 
+    .card-extra {
+      font-size: 0.8rem;
+      opacity: 0.75;
+      margin-top: 4px;
+    }
+
     .card.highlight {
       border-color: #21e6b8;
       box-shadow: 0 0 20px rgba(33,230,184,0.75);
@@ -200,7 +202,7 @@
       opacity: 0.8;
     }
     .logo-box img {
-      height: 130px;   /* İSTEDİĞİN KADAR BÜYÜT */
+      height: 130px;   /* logo boyutu */
       object-fit: contain;
       filter: drop-shadow(0 0 6px rgba(0,0,0,0.5));
     }
@@ -211,10 +213,10 @@
 <body>
 <div class="container">
 
-  <!-- BİSMİLLAH -->
+  <!-- Bismillah -->
   <div class="bismillah">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
 
-  <!-- TOP BAR -->
+  <!-- Top bar -->
   <div class="topbar">
     <div class="topbar-left">
       <div class="top-dot"></div>
@@ -223,7 +225,7 @@
     <div class="top-right">AbanGroup • Den Haag</div>
   </div>
 
-  <!-- HEADER -->
+  <!-- Header -->
   <header class="header">
     <div>
       <div class="location">Den Haag</div>
@@ -235,10 +237,10 @@
     </div>
   </header>
 
-  <!-- MAIN LAYOUT -->
+  <!-- Main layout -->
   <section class="main-layout">
 
-    <!-- SOL TARAF -->
+    <!-- Left -->
     <div class="left-column">
       <div class="next-panel">
         <div>
@@ -252,7 +254,7 @@
       <button class="btn" id="playTestBtn">Ezan test / geluid inschakelen</button>
     </div>
 
-    <!-- SAĞ TARAF -->
+    <!-- Right -->
     <div class="grid-panel">
       <div class="grid-title">Gebedstijden vandaag</div>
       <div class="grid" id="prayerGrid"></div>
@@ -260,24 +262,22 @@
 
   </section>
 
-  <!-- LOGO -->
+  <!-- Logo -->
   <div class="logo-box">
     <img src="abanlogo.png" alt="Aban Group">
   </div>
 
 </div>
 
-<!-- EZAN SES DOSYASI -->
+<!-- Ezan ses dosyası -->
 <audio id="adhanAudio" preload="auto">
   <source src="azan.mp3" type="audio/mpeg">
 </audio>
 
 <script>
-
 /* ===========================
-       KONFİG
+   KONFİG
 =========================== */
-
 const CITY     = "Den Haag";
 const COUNTRY  = "Netherlands";
 const METHOD   = 13;
@@ -298,11 +298,11 @@ let timings      = {};
 let played       = {};
 let scheduleDate = null;
 let adhanEnabled = false;
+let isFetching   = false;
 
 /* ===========================
-       SAAT & TARİH
+   SAAT & TARİH
 =========================== */
-
 function updateClockAndDate() {
   const now = new Date();
   document.getElementById("clock").textContent =
@@ -315,9 +315,8 @@ function updateClockAndDate() {
 setInterval(updateClockAndDate, 1000);
 
 /* ===========================
-       API URL
+   API URL
 =========================== */
-
 function buildApiUrl(date){
   const d  = date || new Date();
   const dd = String(d.getDate()).padStart(2,"0");
@@ -328,62 +327,78 @@ function buildApiUrl(date){
 }
 
 /* ===========================
-     VAKİTLERİ ÇEK
+   VAKİTLERİ ÇEK
 =========================== */
-
 function fetchTimes(date){
+  if (isFetching) return;
+  isFetching = true;
+
   scheduleDate = date || new Date();
 
   fetch(buildApiUrl(scheduleDate))
     .then(r => r.json())
     .then(j => {
       timings = j.data.timings;
-      played = {};
+      played  = {};
       buildGrid();
       updateUI();
-    });
+    })
+    .catch(e => console.error("API error:", e))
+    .finally(() => { isFetching = false; });
 }
 
+/* ===========================
+   GRID
+=========================== */
 function buildGrid(){
   const grid = document.getElementById("prayerGrid");
   grid.innerHTML = "";
 
-  displayOrder.forEach(k=>{
-    if(!timings[k]) return;
+  if (!timings) return;
 
-    const t = timings[k].split(" ")[0];
+  displayOrder.forEach(k=>{
+    const raw = timings[k];
+    if (!raw) return;
+
+    const t = raw.split(" ")[0];
 
     const card = document.createElement("div");
     card.className = "card";
     card.dataset.key = k;
 
+    let extra = "";
+    if (k === "Sunrise") extra = "Güneş doğuşu";
+
     card.innerHTML = `
       <div class="card-name">${namesNL[k]}</div>
       <div class="card-time">${t}</div>
+      <div class="card-extra">${extra}</div>
     `;
     grid.appendChild(card);
   });
 }
 
 /* ===========================
-   SONRAKİ NAMAZ HESABI
+   SONRAKİ NAMAZ
 =========================== */
-
 function getNextPrayer(){
-  const now = new Date();
-  const d = scheduleDate;
+  if (!timings || !timings.Fajr || !scheduleDate) return null;
 
-  let next = null;
+  const now = new Date();
+  const d   = scheduleDate;
+  let next  = null;
 
   prayerOrder.forEach(k=>{
-    if(!timings[k]) return;
+    const raw = timings[k];
+    if (!raw) return;
 
-    const tStr = timings[k].split(" ")[0];
-    const [h,m] = tStr.split(":").map(Number);
+    const timeStr = raw.split(" ")[0];
+    if (!timeStr.includes(":")) return;
+    const [h,m] = timeStr.split(":").map(Number);
 
     const t = new Date(d.getFullYear(), d.getMonth(), d.getDate(), h, m);
 
-    if(t > now && (!next || t < next.time)){
+    if (t > now && (!next || t < next.time)){
       next = { name: k, time: t };
     }
   });
@@ -392,108 +407,121 @@ function getNextPrayer(){
 }
 
 function formatDiff(ms){
-  if(ms <= 0) return "Nu";
+  if (ms <= 0) return "Nu";
   const s = Math.floor(ms/1000);
   const m = Math.floor(s/60);
   const h = Math.floor(m/60);
-  if(h > 0) return `${h} uur ${m%60} min`;
+  if (h > 0) return `${h} uur ${m%60} min`;
   return `${m} min ${s%60} sec`;
 }
 
 function updateUI(){
-  const next = getNextPrayer();
+  if (!timings || !timings.Fajr || !scheduleDate) return;
 
+  const next = getNextPrayer();
   const nameEl = document.getElementById("nextPrayerName");
   const timeEl = document.getElementById("nextPrayerTime");
   const cdEl   = document.getElementById("nextPrayerCountdown");
 
-  if(!next){
+  if (!next){
     nameEl.textContent = "Alle gebeden voorbij";
     timeEl.textContent = "";
-    cdEl.textContent = "Nieuwe tijden worden geladen...";
+    cdEl.textContent   = "Nieuwe tijden worden geladen...";
+    document.querySelectorAll(".card").forEach(c=>c.classList.remove("highlight"));
     return;
   }
 
   nameEl.textContent = namesNL[next.name];
-  timeEl.textContent = next.time.toLocaleTimeString("nl-NL",{hour:"2-digit",minute:"2-digit"});
+  timeEl.textContent =
+    next.time.toLocaleTimeString("nl-NL",{hour:"2-digit",minute:"2-digit",hour12:false});
 
   cdEl.textContent = formatDiff(next.time - new Date());
 
   document.querySelectorAll(".card").forEach(c=>c.classList.remove("highlight"));
   const active = document.querySelector(`.card[data-key="${next.name}"]`);
-  if(active) active.classList.add("highlight");
+  if (active) active.classList.add("highlight");
 }
 
 /* ===========================
-     GÜN ÇEVİRME (ISHA SONRASI)
+   GÜN ÇEVİRME (ISHA SONRASI)
 =========================== */
-
 function checkDayRollover(){
-  if(!timings.Isha) return;
+  if (!scheduleDate || !timings || !timings.Isha) return;
 
   const d = scheduleDate;
-  const [h,m] = timings.Isha.split(" ")[0].split(":").map(Number);
-  const ishaTime = new Date(d.getFullYear(), d.getMonth(), d.getDate(), h, m);
+  const raw = timings.Isha.split(" ")[0];
+  if (!raw.includes(":")) return;
+  const [h,m] = raw.split(":").map(Number);
 
+  const ishaTime = new Date(d.getFullYear(), d.getMonth(), d.getDate(), h, m);
   const now = new Date();
-  if(now > ishaTime){
+
+  if (now > ishaTime) {
     const tomorrow = new Date(d.getTime() + 24*3600*1000);
     fetchTimes(tomorrow);
   }
 }
 
 /* ===========================
-     EZAN TETİĞİ
+   EZAN ÇALMA
 =========================== */
-
 function playAdhan(){
   const audio = document.getElementById("adhanAudio");
   audio.currentTime = 0;
   audio.play().catch(()=>{});
 }
 
-function checkAdhan(){
-  if(!adhanEnabled) return;
+/* Tizen için geliştirilmiş – 1 dakikalık pencere ile */
+function checkAdhanTrigger() {
+  if (!adhanEnabled || !timings || !timings.Fajr) return;
 
   const now = new Date();
-  const hm = now.toLocaleTimeString("nl-NL",{hour:"2-digit",minute:"2-digit"});
+  const nowMinutes = now.getHours() * 60 + now.getMinutes();
 
-  prayerOrder.forEach(k=>{
-    const t = timings[k]?.split(" ")[0]?.slice(0,5);
-    if(t === hm && !played[k]){
-      played[k] = true;
+  prayerOrder.forEach(key => {
+    const raw = timings[key];
+    if (!raw) return;
+
+    let t = raw.split(" ")[0];
+    if (!t.includes(":")) return;
+
+    const [h, m] = t.split(":").map(Number);
+    const prayerMinutes = h * 60 + m;
+
+    // Namaz vakti geldiyse veya 1 dakika içindeyse ve daha çalınmadıysa
+    if (nowMinutes >= prayerMinutes &&
+        nowMinutes < prayerMinutes + 1 &&
+        !played[key]) {
+
+      played[key] = true;
+      console.log("🔊 EZAN ÇALIYOR:", key);
       playAdhan();
     }
   });
 }
 
 /* ===========================
-     BUTON
+   BUTON
 =========================== */
-
 document.getElementById("playTestBtn").addEventListener("click", ()=>{
   adhanEnabled = true;
-  playAdhan();
+  playAdhan();  // test
 });
 
 /* ===========================
-     LOOP
+   LOOP & START
 =========================== */
-
 setInterval(updateUI, 1000);
-setInterval(checkAdhan, 1000);
+setInterval(checkAdhanTrigger, 1000);
 setInterval(checkDayRollover, 5000);
 
-/* ===========================
-     START
-=========================== */
-
 fetchTimes(new Date());
-
 </script>
 
 </body>
 </html>
+
+
 
 
 
