@@ -6,8 +6,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
   <style>
-
-    * Bu WebSitesi Talha Yıldız Tarafından AbanGroup için yapılmıştır. */
     * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
@@ -296,7 +294,6 @@
   <section class="main-layout">
 
     <!-- Left: next prayer & button -->
-    
     <div class="left-column">
       <div class="next-panel">
         <div>
@@ -310,7 +307,8 @@
       <div>
         <button class="btn" id="playTestBtn">Ezan test / geluid inschakelen</button>
         <div class="hint">
-        
+          Klik één keer om het geluid toe te staan. De ezan wordt dan automatisch
+          afgespeeld op het juiste tijdstip.
         </div>
       </div>
     </div>
@@ -324,17 +322,15 @@
   </section>
 
   <!-- Logo bottom center -->
-  
   <div class="logo-box">
-   
-    <img src="abanlogo.png" alt="Aban Group logo">
+    <img src="AbanGroup.png" alt="Aban Group logo">
   </div>
 
 </div>
 
-<!-- Ezan ses dosyası -->
+<!-- Ezan ses dosyası (MP3) -->
 <audio id="adhanAudio" preload="auto">
-  <source src="azan.mp4" type="video/mp4">
+  <source src="azan.mp3" type="audio/mpeg">
 </audio>
 
 <script>
@@ -359,9 +355,10 @@ const namesNL = {
   Isha:    "Isha"
 };
 
-let timings       = {};
-let adhanEnabled  = false;
-let played        = {};
+let timings          = {};
+let adhanEnabled     = false;
+let played           = {};
+let lastFetchedDate  = null;
 
 /* ==============================
    SAAT & TARİH
@@ -380,19 +377,32 @@ updateClockAndDate();
    VAKİTLERİ ÇEK (CORS PROXY İLE)
 ============================== */
 function fetchTimings() {
-  const baseUrl = `https://api.aladhan.com/v1/timingsByCity?city=${CITY}&country=${COUNTRY}&method=${METHOD}`;
-  // CORS engelini aşmak için public proxy kullanıyoruz
+  const baseUrl   = `https://api.aladhan.com/v1/timingsByCity?city=${CITY}&country=${COUNTRY}&method=${METHOD}`;
   const proxiedUrl = "https://corsproxy.io/?" + encodeURIComponent(baseUrl);
 
   fetch(proxiedUrl)
     .then(r => r.json())
     .then(j => {
       timings = j.data.timings;
+      lastFetchedDate = new Date().toDateString();
+      played = {};             // yeni güne reset
       buildGrid();
+      updateUI();              // ekrana hemen yansıt
     })
     .catch(e => {
       console.error("API error:", e);
     });
+}
+
+/* ==============================
+   GÜN DEĞİŞİNCE OTOMATİK YENİLE
+============================== */
+function checkDayRollover() {
+  if (!lastFetchedDate) return;
+  const todayStr = new Date().toDateString();
+  if (todayStr !== lastFetchedDate) {
+    fetchTimings();
+  }
 }
 
 /* ==============================
@@ -473,8 +483,22 @@ function formatDiff(ms) {
    ARAYÜZ GÜNCELLE
 ============================== */
 function updateUI() {
+  if (!timings || !timings.Fajr) return;
+
   const next = getNextPrayer();
-  if(!next) return;
+
+  if(!next) {
+    // Günün bütün vakitleri bittiğinde boş görünmesin
+    document.getElementById("nextPrayerName").textContent =
+      "Alle gebeden van vandaag zijn voorbij";
+    document.getElementById("nextPrayerTime").textContent = "";
+    document.getElementById("nextPrayerCountdown").textContent =
+      "Nieuwe tijden worden na middernacht automatisch geladen.";
+
+    // highlight temizle
+    document.querySelectorAll(".card").forEach(c => c.classList.remove("highlight"));
+    return;
+  }
 
   document.getElementById("nextPrayerName").textContent = namesNL[next.name];
   document.getElementById("nextPrayerTime").textContent =
@@ -483,12 +507,16 @@ function updateUI() {
   const diff = next.time - new Date();
   document.getElementById("nextPrayerCountdown").textContent = formatDiff(diff);
 
-  // highlight
   document.querySelectorAll(".card").forEach(c => c.classList.remove("highlight"));
   const active = document.querySelector(`.card[data-key="${next.name}"]`);
   if(active) active.classList.add("highlight");
 }
-setInterval(updateUI,1000);
+
+// her saniye hem UI’yi hem günü kontrol et
+setInterval(() => {
+  updateUI();
+  checkDayRollover();
+}, 1000);
 
 /* ==============================
    EZAN ÇALMA
@@ -535,6 +563,8 @@ fetchTimings();
 
 </body>
 </html>
+
+
 
 
 
