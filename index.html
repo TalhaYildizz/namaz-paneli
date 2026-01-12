@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="nl">
 <head>
   <meta charset="UTF-8" />
@@ -84,9 +84,11 @@
       letter-spacing: 2px;
     }
     .date { opacity: 0.85; font-size: 1rem; margin-top: 4px; }
+
+    /* ✅ SAAT BÜYÜTÜLDÜ */
     .clock {
-      font-size: 3.4rem;
-      font-weight: 700;
+      font-size: clamp(4.2rem, 6vw, 6.4rem);
+      font-weight: 800;
       letter-spacing: 2px;
       text-align: right;
     }
@@ -202,11 +204,10 @@
       opacity: 0.8;
     }
     .logo-box img {
-      height: 130px;   /* logo boyutu */
+      height: 130px;
       object-fit: contain;
       filter: drop-shadow(0 0 6px rgba(0,0,0,0.5));
     }
-
   </style>
 </head>
 
@@ -300,6 +301,13 @@ let scheduleDate = null;
 let adhanEnabled = false;
 let isFetching   = false;
 
+/* ✅ Yeni: Date objeleri ve gecikme toleransı */
+let prayerTimes  = {};     // {Fajr: Date, ...}
+let lastCheckTs  = null;   // ms timestamp
+
+/* ✅ Wake Lock */
+let wakeLock = null;
+
 /* ===========================
    SAAT & TARİH
 =========================== */
@@ -340,6 +348,26 @@ function fetchTimes(date){
     .then(j => {
       timings = j.data.timings;
       played  = {};
+
+      /* ✅ prayerTimes üret */
+      prayerTimes = {};
+      prayerOrder.forEach(k => {
+        const raw = timings[k];
+        if (!raw) return;
+        const t = raw.split(" ")[0];
+        if (!t.includes(":")) return;
+        const [h, m] = t.split(":").map(Number);
+        prayerTimes[k] = new Date(
+          scheduleDate.getFullYear(),
+          scheduleDate.getMonth(),
+          scheduleDate.getDate(),
+          h, m, 0, 0
+        );
+      });
+
+      /* ✅ gecikmeli interval kaçırmasın */
+      lastCheckTs = Date.now();
+
       buildGrid();
       updateUI();
     })
@@ -443,10 +471,18 @@ function updateUI(){
 }
 
 /* ===========================
-   GÜN ÇEVİRME (ISHA SONRASI)
+   GÜN ÇEVİRME (ISHA SONRASI + TARİH DEĞİŞİNCE)
 =========================== */
 function checkDayRollover(){
   if (!scheduleDate || !timings || !timings.Isha) return;
+
+  const now = new Date();
+
+  // ✅ Takvim günü değiştiyse direkt yeni gün
+  if (now.toDateString() !== scheduleDate.toDateString()) {
+    fetchTimes(now);
+    return;
+  }
 
   const d = scheduleDate;
   const raw = timings.Isha.split(" ")[0];
@@ -454,7 +490,6 @@ function checkDayRollover(){
   const [h,m] = raw.split(":").map(Number);
 
   const ishaTime = new Date(d.getFullYear(), d.getMonth(), d.getDate(), h, m);
-  const now = new Date();
 
   if (now > ishaTime) {
     const tomorrow = new Date(d.getTime() + 24*3600*1000);
@@ -471,40 +506,60 @@ function playAdhan(){
   audio.play().catch(()=>{});
 }
 
-/* Tizen için geliştirilmiş – 1 dakikalık pencere ile */
+/* ✅ Asıl fix: “1 dakikalık pencere” yerine “son kontrol → şimdi aralığında geçti mi?” */
 function checkAdhanTrigger() {
-  if (!adhanEnabled || !timings || !timings.Fajr) return;
+  if (!adhanEnabled || !prayerTimes || !prayerTimes.Fajr) return;
 
-  const now = new Date();
-  const nowMinutes = now.getHours() * 60 + now.getMinutes();
+  const now = Date.now();
+  if (lastCheckTs == null) lastCheckTs = now;
+
+  const from = lastCheckTs;
+  const to   = now;
 
   prayerOrder.forEach(key => {
-    const raw = timings[key];
-    if (!raw) return;
+    const pt = prayerTimes[key];
+    if (!pt) return;
 
-    let t = raw.split(" ")[0];
-    if (!t.includes(":")) return;
+    const t = pt.getTime();
 
-    const [h, m] = t.split(":").map(Number);
-    const prayerMinutes = h * 60 + m;
-
-    // Namaz vakti geldiyse veya 1 dakika içindeyse ve daha çalınmadıysa
-    if (nowMinutes >= prayerMinutes &&
-        nowMinutes < prayerMinutes + 1 &&
-        !played[key]) {
-
+    // from < t <= to aralığında vakit geçtiyse çal (gecikmede kaçırmaz)
+    if (!played[key] && t > from && t <= to) {
       played[key] = true;
-      console.log("🔊 EZAN ÇALIYOR:", key);
+      console.log("🔊 EZAN ÇALIYOR:", key, new Date(t).toLocaleTimeString("nl-NL",{hour12:false}));
       playAdhan();
     }
   });
+
+  lastCheckTs = now;
 }
+
+/* ===========================
+   WAKE LOCK (tablet donmalarını azaltır)
+=========================== */
+async function enableWakeLock() {
+  try {
+    if (!("wakeLock" in navigator)) return;
+    wakeLock = await navigator.wakeLock.request("screen");
+    console.log("✅ Wake Lock aktif");
+    wakeLock.addEventListener("release", () => console.log("⚠️ Wake Lock bırakıldı"));
+  } catch (e) {
+    console.log("Wake Lock alınamadı:", e);
+  }
+}
+
+document.addEventListener("visibilitychange", async () => {
+  if (document.visibilityState === "visible" && adhanEnabled) {
+    await enableWakeLock();
+    updateUI();
+  }
+});
 
 /* ===========================
    BUTON
 =========================== */
-document.getElementById("playTestBtn").addEventListener("click", ()=>{
+document.getElementById("playTestBtn").addEventListener("click", async ()=>{
   adhanEnabled = true;
+  await enableWakeLock();
   playAdhan();  // test
 });
 
@@ -520,26 +575,3 @@ fetchTimes(new Date());
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
