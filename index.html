@@ -53,7 +53,11 @@
       border: 1px solid rgba(255,255,255,0.08);
     }
 
-    .topbar-left { display: flex; align-items: center; gap: 10px; }
+    .topbar-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
 
     .top-dot {
       width: 10px;
@@ -115,7 +119,9 @@
     }
 
     @media (max-width: 900px) {
-      .main-layout { grid-template-columns: 1fr; }
+      .main-layout {
+        grid-template-columns: 1fr;
+      }
     }
 
     .left-column {
@@ -172,7 +178,9 @@
       transition: 0.2s;
     }
 
-    .btn:hover { background: #39ffd0; }
+    .btn:hover {
+      background: #39ffd0;
+    }
 
     .debug-box {
       min-height: 52px;
@@ -209,7 +217,9 @@
     }
 
     @media (max-width: 700px) {
-      .grid { grid-template-columns: repeat(2, 1fr); }
+      .grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
     }
 
     .card {
@@ -322,20 +332,20 @@
 </audio>
 
 <script>
-const CITY     = "Den Haag";
-const COUNTRY  = "Netherlands";
-const METHOD   = 13;
+const CITY = "Den Haag";
+const COUNTRY = "Netherlands";
+const METHOD = 13;
 
-const prayerOrder  = ["Fajr","Dhuhr","Asr","Maghrib","Isha"];
-const displayOrder = ["Fajr","Sunrise","Dhuhr","Asr","Maghrib","Isha"];
+const prayerOrder = ["Fajr", "Dhuhr", "Asr", "Maghrib", "Isha"];
+const displayOrder = ["Fajr", "Sunrise", "Dhuhr", "Asr", "Maghrib", "Isha"];
 
 const namesNL = {
-  Fajr:    "Fajr / İmsak",
+  Fajr: "Fajr / İmsak",
   Sunrise: "Shams / Güneş",
-  Dhuhr:   "Dhuhr / Öğle",
-  Asr:     "Asr / İkindi",
+  Dhuhr: "Dhuhr / Öğle",
+  Asr: "Asr / İkindi",
   Maghrib: "Maghrib / Akşam",
-  Isha:    "Isha / Yatsı"
+  Isha: "Isha / Yatsı"
 };
 
 let timings = {};
@@ -343,7 +353,6 @@ let played = {};
 let scheduleDate = null;
 let adhanEnabled = false;
 let isFetching = false;
-
 let prayerTimes = {};
 let lastCheckTs = null;
 let wakeLock = null;
@@ -371,16 +380,16 @@ function updateClockAndDate() {
 }
 setInterval(updateClockAndDate, 1000);
 
-function buildApiUrl(date){
-  const d  = date || new Date();
-  const dd = String(d.getDate()).padStart(2,"0");
-  const mm = String(d.getMonth()+1).padStart(2,"0");
+function buildApiUrl(date) {
+  const d = date || new Date();
+  const dd = String(d.getDate()).padStart(2, "0");
+  const mm = String(d.getMonth() + 1).padStart(2, "0");
   const yy = d.getFullYear();
   const base = `https://api.aladhan.com/v1/timingsByCity/${dd}-${mm}-${yy}?city=${CITY}&country=${COUNTRY}&method=${METHOD}`;
   return "https://corsproxy.io/?" + encodeURIComponent(base);
 }
 
-function fetchTimes(date){
+function fetchTimes(date) {
   if (isFetching) return;
   isFetching = true;
 
@@ -398,6 +407,7 @@ function fetchTimes(date){
         if (!raw) return;
         const t = raw.split(" ")[0];
         if (!t.includes(":")) return;
+
         const [h, m] = t.split(":").map(Number);
         prayerTimes[k] = new Date(
           scheduleDate.getFullYear(),
@@ -408,7 +418,6 @@ function fetchTimes(date){
       });
 
       lastCheckTs = Date.now();
-
       buildGrid();
       updateUI();
       setDebug("Vakitler yüklendi");
@@ -417,10 +426,12 @@ function fetchTimes(date){
       console.error("API error:", e);
       setDebug("API hatası: " + (e.message || e));
     })
-    .finally(() => { isFetching = false; });
+    .finally(() => {
+      isFetching = false;
+    });
 }
 
-function buildGrid(){
+function buildGrid() {
   const grid = document.getElementById("prayerGrid");
   grid.innerHTML = "";
 
@@ -443,16 +454,17 @@ function buildGrid(){
       <div class="card-time">${t}</div>
       <div class="card-extra">${extra}</div>
     `;
+
     grid.appendChild(card);
   });
 }
 
-function getNextPrayer(){
+function getNextPrayer() {
   if (!timings || !timings.Fajr || !scheduleDate) return null;
 
   const now = new Date();
-  const d   = scheduleDate;
-  let next  = null;
+  const d = scheduleDate;
+  let next = null;
 
   prayerOrder.forEach(k => {
     const raw = timings[k];
@@ -460,11 +472,11 @@ function getNextPrayer(){
 
     const timeStr = raw.split(" ")[0];
     if (!timeStr.includes(":")) return;
-    const [h,m] = timeStr.split(":").map(Number);
 
+    const [h, m] = timeStr.split(":").map(Number);
     const t = new Date(d.getFullYear(), d.getMonth(), d.getDate(), h, m);
 
-    if (t > now && (!next || t < next.time)){
+    if (t > now && (!next || t < next.time)) {
       next = { name: k, time: t };
     }
   });
@@ -472,16 +484,18 @@ function getNextPrayer(){
   return next;
 }
 
-function formatDiff(ms){
+function formatDiff(ms) {
   if (ms <= 0) return "Nu";
+
   const s = Math.floor(ms / 1000);
   const m = Math.floor(s / 60);
   const h = Math.floor(m / 60);
+
   if (h > 0) return `${h} uur ${m % 60} min`;
   return `${m} min ${s % 60} sec`;
 }
 
-function updateUI(){
+function updateUI() {
   if (!timings || !timings.Fajr || !scheduleDate) return;
 
   const next = getNextPrayer();
@@ -489,7 +503,7 @@ function updateUI(){
   const timeEl = document.getElementById("nextPrayerTime");
   const cdEl = document.getElementById("nextPrayerCountdown");
 
-  if (!next){
+  if (!next) {
     nameEl.textContent = "Alle gebeden voorbij";
     timeEl.textContent = "";
     cdEl.textContent = "Nieuwe tijden worden geladen...";
@@ -498,12 +512,11 @@ function updateUI(){
   }
 
   nameEl.textContent = namesNL[next.name];
-  timeEl.textContent =
-    next.time.toLocaleTimeString("nl-NL", {
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: false
-    });
+  timeEl.textContent = next.time.toLocaleTimeString("nl-NL", {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false
+  });
 
   cdEl.textContent = formatDiff(next.time - new Date());
 
@@ -512,7 +525,7 @@ function updateUI(){
   if (active) active.classList.add("highlight");
 }
 
-function checkDayRollover(){
+function checkDayRollover() {
   if (!scheduleDate || !timings || !timings.Isha) return;
 
   const now = new Date();
@@ -525,8 +538,8 @@ function checkDayRollover(){
   const d = scheduleDate;
   const raw = timings.Isha.split(" ")[0];
   if (!raw.includes(":")) return;
-  const [h,m] = raw.split(":").map(Number);
 
+  const [h, m] = raw.split(":").map(Number);
   const ishaTime = new Date(d.getFullYear(), d.getMonth(), d.getDate(), h, m);
 
   if (now > ishaTime) {
@@ -542,14 +555,13 @@ function playAdhan() {
     audio.pause();
     audio.currentTime = 0;
   } catch (e) {
-    console.warn("Pause/currentTime reset hatası:", e);
+    console.warn("Audio reset uyarısı:", e);
   }
 
   audio.muted = false;
   audio.volume = 1;
-  audio.load();
 
-  setDebug(`Ses başlatılıyor | readyState=${audio.readyState} | currentSrc=${audio.currentSrc || "yok"}`);
+  setDebug(`Ses başlatılıyor | currentSrc=${audio.currentSrc || "yok"} | readyState=${audio.readyState}`);
 
   const playPromise = audio.play();
 
@@ -561,7 +573,6 @@ function playAdhan() {
       .catch((e) => {
         console.error("Audio play hatası:", e);
         setDebug("Audio play hatası: " + (e.message || e));
-        alert("Ses oynatılamadı: " + (e.message || e));
       });
   }
 }
@@ -592,25 +603,27 @@ function checkAdhanTrigger() {
 }
 
 async function enableWakeLock() {
+  if (!("wakeLock" in navigator)) {
+    setDebug("Wake Lock desteklenmiyor");
+    return;
+  }
+
   try {
-    if (!("wakeLock" in navigator)) {
-      setDebug("Wake Lock desteklenmiyor");
-      return;
-    }
     wakeLock = await navigator.wakeLock.request("screen");
     setDebug("Wake Lock aktif");
+
     wakeLock.addEventListener("release", () => {
       setDebug("Wake Lock bırakıldı");
     });
   } catch (e) {
-    console.log("Wake Lock alınamadı:", e);
     setDebug("Wake Lock alınamadı: " + (e.message || e));
+    throw e;
   }
 }
 
 document.addEventListener("visibilitychange", async () => {
   if (document.visibilityState === "visible" && adhanEnabled) {
-    await enableWakeLock();
+    enableWakeLock().catch(() => {});
     updateUI();
   }
 });
@@ -641,23 +654,29 @@ document.addEventListener("DOMContentLoaded", () => {
   audio.addEventListener("error", () => {
     const err = audio.error;
     let msg = "Bilinmeyen audio hatası";
+
     if (err) {
       if (err.code === 1) msg = "MEDIA_ERR_ABORTED";
       if (err.code === 2) msg = "MEDIA_ERR_NETWORK";
       if (err.code === 3) msg = "MEDIA_ERR_DECODE";
       if (err.code === 4) msg = "MEDIA_ERR_SRC_NOT_SUPPORTED";
     }
+
     setDebug("Audio error: " + msg);
   });
 
   setDebug("Sayfa hazır");
 });
 
-document.getElementById("playTestBtn").addEventListener("click", async () => {
+document.getElementById("playTestBtn").addEventListener("click", () => {
   setDebug("Test butonuna basıldı");
   adhanEnabled = true;
-  await enableWakeLock();
+
   playAdhan();
+
+  enableWakeLock().catch((e) => {
+    setDebug("Wake Lock pas geçildi: " + (e.message || e));
+  });
 });
 
 setInterval(updateUI, 1000);
