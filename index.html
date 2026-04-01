@@ -308,14 +308,17 @@
   </section>
 
   <div class="logo-box">
-    <img src="abanlogo.png" alt="Aban Group">
+    <img
+      src="https://raw.githubusercontent.com/TalhaYildizz/namaz-paneli/main/abanlogo.png"
+      alt="Aban Group"
+    >
   </div>
 
 </div>
 
-<audio id="adhanAudio" preload="auto" playsinline>
-  <source src="azan.mp3" type="audio/mpeg">
-  <source src="azan.mp4" type="audio/mp4">
+<audio id="adhanAudio" preload="auto" playsinline crossorigin="anonymous">
+  <source src="https://raw.githubusercontent.com/TalhaYildizz/namaz-paneli/main/azan.mp3" type="audio/mpeg">
+  <source src="https://raw.githubusercontent.com/TalhaYildizz/namaz-paneli/main/azan.mp4" type="audio/mp4">
 </audio>
 
 <script>
@@ -546,9 +549,7 @@ function playAdhan() {
   audio.volume = 1;
   audio.load();
 
-  setDebug(
-    `Ses başlatılıyor | readyState=${audio.readyState} | currentSrc=${audio.currentSrc || "yok"}`
-  );
+  setDebug(`Ses başlatılıyor | readyState=${audio.readyState} | currentSrc=${audio.currentSrc || "yok"}`);
 
   const playPromise = audio.play();
 
