@@ -5,7 +5,6 @@
   <title>Gebedstijden - Den Haag</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- Arapça hat fontu -->
   <link href="https://fonts.googleapis.com/css2?family=Amiri+Quran&display=swap" rel="stylesheet">
 
   <style>
@@ -30,7 +29,6 @@
       gap: 22px;
     }
 
-    /* Bismillah */
     .bismillah {
       margin-top: 8px;
       text-align: center;
@@ -45,7 +43,6 @@
         0 0 30px rgba(0,0,0,0.8);
     }
 
-    /* Top bar */
     .topbar {
       display: flex;
       justify-content: space-between;
@@ -55,22 +52,29 @@
       background: rgba(0,0,0,0.35);
       border: 1px solid rgba(255,255,255,0.08);
     }
+
     .topbar-left { display: flex; align-items: center; gap: 10px; }
+
     .top-dot {
-      width: 10px; height: 10px;
+      width: 10px;
+      height: 10px;
       border-radius: 999px;
       background: #21e6b8;
       box-shadow: 0 0 10px #21e6b8;
     }
+
     .top-title {
       font-size: 0.95rem;
       letter-spacing: 2px;
       text-transform: uppercase;
       opacity: 0.8;
     }
-    .top-right { font-size: 0.85rem; opacity: 0.7; }
 
-    /* Header */
+    .top-right {
+      font-size: 0.85rem;
+      opacity: 0.7;
+    }
+
     .header {
       display: flex;
       justify-content: space-between;
@@ -78,35 +82,48 @@
       flex-wrap: wrap;
       gap: 12px;
     }
+
     .location {
       font-size: 2.3rem;
       font-weight: 700;
       letter-spacing: 2px;
     }
-    .date { opacity: 0.85; font-size: 1rem; margin-top: 4px; }
 
-    /* ✅ SAAT BÜYÜTÜLDÜ */
+    .date {
+      opacity: 0.85;
+      font-size: 1rem;
+      margin-top: 4px;
+    }
+
     .clock {
       font-size: clamp(5.2rem, 7.2vw, 8.2rem);
       font-weight: 800;
       letter-spacing: 2px;
       text-align: right;
     }
-    .tz-label { text-align: right; font-size: 0.9rem; opacity: 0.65; }
 
-    /* Layout */
+    .tz-label {
+      text-align: right;
+      font-size: 0.9rem;
+      opacity: 0.65;
+    }
+
     .main-layout {
       display: grid;
       grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
       gap: 22px;
     }
+
     @media (max-width: 900px) {
       .main-layout { grid-template-columns: 1fr; }
     }
 
-    .left-column { display: flex; flex-direction: column; gap: 18px; }
+    .left-column {
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
 
-    /* Next panel */
     .next-panel {
       flex: 1;
       background: linear-gradient(135deg, rgba(33,230,184,0.12), rgba(5,8,30,0.95));
@@ -119,10 +136,29 @@
       justify-content: space-between;
       gap: 18px;
     }
-    .next-label { opacity: 0.8; font-size: 0.9rem; letter-spacing: 2px; text-transform: uppercase; }
-    .next-name { font-size: 2rem; font-weight: 700; margin-top: 4px; }
-    .next-time { font-size: 1.6rem; opacity: 0.9; }
-    .next-countdown { font-size: 1.2rem; opacity: 0.9; }
+
+    .next-label {
+      opacity: 0.8;
+      font-size: 0.9rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .next-name {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-top: 4px;
+    }
+
+    .next-time {
+      font-size: 1.6rem;
+      opacity: 0.9;
+    }
+
+    .next-countdown {
+      font-size: 1.2rem;
+      opacity: 0.9;
+    }
 
     .btn {
       padding: 12px 22px;
@@ -135,9 +171,21 @@
       font-size: 0.95rem;
       transition: 0.2s;
     }
+
     .btn:hover { background: #39ffd0; }
 
-    /* Grid */
+    .debug-box {
+      min-height: 52px;
+      padding: 12px 16px;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: #dffef7;
+      font-size: 0.9rem;
+      line-height: 1.45;
+      word-break: break-word;
+    }
+
     .grid-panel {
       background: rgba(255,255,255,0.03);
       border-radius: 20px;
@@ -145,6 +193,7 @@
       border: 1px solid rgba(255,255,255,0.06);
       box-shadow: 0 0 18px rgba(0,0,0,0.4);
     }
+
     .grid-title {
       font-size: 0.95rem;
       text-transform: uppercase;
@@ -152,11 +201,13 @@
       opacity: 0.8;
       margin-bottom: 14px;
     }
+
     .grid {
       display: grid;
       grid-template-columns: repeat(3, minmax(0,1fr));
       gap: 14px;
     }
+
     @media (max-width: 700px) {
       .grid { grid-template-columns: repeat(2, 1fr); }
     }
@@ -196,13 +247,13 @@
       transform: translateY(-3px) scale(1.03);
     }
 
-    /* Logo */
     .logo-box {
       margin-top: 32px;
       display: flex;
       justify-content: center;
       opacity: 0.8;
     }
+
     .logo-box img {
       height: 130px;
       object-fit: contain;
@@ -214,10 +265,8 @@
 <body>
 <div class="container">
 
-  <!-- Bismillah -->
   <div class="bismillah">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
 
-  <!-- Top bar -->
   <div class="topbar">
     <div class="topbar-left">
       <div class="top-dot"></div>
@@ -226,7 +275,6 @@
     <div class="top-right">AbanGroup • Den Haag</div>
   </div>
 
-  <!-- Header -->
   <header class="header">
     <div>
       <div class="location">Den Haag</div>
@@ -238,10 +286,7 @@
     </div>
   </header>
 
-  <!-- Main layout -->
   <section class="main-layout">
-
-    <!-- Left -->
     <div class="left-column">
       <div class="next-panel">
         <div>
@@ -253,32 +298,27 @@
       </div>
 
       <button class="btn" id="playTestBtn">Ezan test / geluid inschakelen</button>
+      <div class="debug-box" id="debugStatus">Status: Klaar</div>
     </div>
 
-    <!-- Right -->
     <div class="grid-panel">
       <div class="grid-title">Gebedstijden vandaag</div>
       <div class="grid" id="prayerGrid"></div>
     </div>
-
   </section>
 
-  <!-- Logo -->
   <div class="logo-box">
     <img src="abanlogo.png" alt="Aban Group">
   </div>
 
 </div>
 
-<!-- Ezan ses dosyası -->
-<audio id="adhanAudio" preload="auto">
+<audio id="adhanAudio" preload="auto" playsinline>
   <source src="azan.mp3" type="audio/mpeg">
+  <source src="azan.mp4" type="audio/mp4">
 </audio>
 
 <script>
-/* ===========================
-   KONFİG
-=========================== */
 const CITY     = "Den Haag";
 const COUNTRY  = "Netherlands";
 const METHOD   = 13;
@@ -295,36 +335,39 @@ const namesNL = {
   Isha:    "Isha / Yatsı"
 };
 
-let timings      = {};
-let played       = {};
+let timings = {};
+let played = {};
 let scheduleDate = null;
 let adhanEnabled = false;
-let isFetching   = false;
+let isFetching = false;
 
-/* ✅ Yeni: Date objeleri ve gecikme toleransı */
-let prayerTimes  = {};     // {Fajr: Date, ...}
-let lastCheckTs  = null;   // ms timestamp
-
-/* ✅ Wake Lock */
+let prayerTimes = {};
+let lastCheckTs = null;
 let wakeLock = null;
 
-/* ===========================
-   SAAT & TARİH
-=========================== */
+function setDebug(message) {
+  const el = document.getElementById("debugStatus");
+  const time = new Date().toLocaleTimeString("nl-NL", { hour12: false });
+  el.textContent = `Status [${time}]: ${message}`;
+  console.log(message);
+}
+
 function updateClockAndDate() {
   const now = new Date();
   document.getElementById("clock").textContent =
-    now.toLocaleTimeString("nl-NL",{hour12:false});
+    now.toLocaleTimeString("nl-NL", { hour12: false });
 
   const d = scheduleDate || now;
   document.getElementById("dateDisplay").textContent =
-    d.toLocaleDateString("nl-NL",{weekday:"long",year:"numeric",month:"long",day:"numeric"});
+    d.toLocaleDateString("nl-NL", {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric"
+    });
 }
 setInterval(updateClockAndDate, 1000);
 
-/* ===========================
-   API URL
-=========================== */
 function buildApiUrl(date){
   const d  = date || new Date();
   const dd = String(d.getDate()).padStart(2,"0");
@@ -334,9 +377,6 @@ function buildApiUrl(date){
   return "https://corsproxy.io/?" + encodeURIComponent(base);
 }
 
-/* ===========================
-   VAKİTLERİ ÇEK
-=========================== */
 function fetchTimes(date){
   if (isFetching) return;
   isFetching = true;
@@ -347,9 +387,8 @@ function fetchTimes(date){
     .then(r => r.json())
     .then(j => {
       timings = j.data.timings;
-      played  = {};
+      played = {};
 
-      /* ✅ prayerTimes üret */
       prayerTimes = {};
       prayerOrder.forEach(k => {
         const raw = timings[k];
@@ -365,31 +404,30 @@ function fetchTimes(date){
         );
       });
 
-      /* ✅ gecikmeli interval kaçırmasın */
       lastCheckTs = Date.now();
 
       buildGrid();
       updateUI();
+      setDebug("Vakitler yüklendi");
     })
-    .catch(e => console.error("API error:", e))
+    .catch(e => {
+      console.error("API error:", e);
+      setDebug("API hatası: " + (e.message || e));
+    })
     .finally(() => { isFetching = false; });
 }
 
-/* ===========================
-   GRID
-=========================== */
 function buildGrid(){
   const grid = document.getElementById("prayerGrid");
   grid.innerHTML = "";
 
   if (!timings) return;
 
-  displayOrder.forEach(k=>{
+  displayOrder.forEach(k => {
     const raw = timings[k];
     if (!raw) return;
 
     const t = raw.split(" ")[0];
-
     const card = document.createElement("div");
     card.className = "card";
     card.dataset.key = k;
@@ -406,9 +444,6 @@ function buildGrid(){
   });
 }
 
-/* ===========================
-   SONRAKİ NAMAZ
-=========================== */
 function getNextPrayer(){
   if (!timings || !timings.Fajr || !scheduleDate) return null;
 
@@ -416,7 +451,7 @@ function getNextPrayer(){
   const d   = scheduleDate;
   let next  = null;
 
-  prayerOrder.forEach(k=>{
+  prayerOrder.forEach(k => {
     const raw = timings[k];
     if (!raw) return;
 
@@ -436,11 +471,11 @@ function getNextPrayer(){
 
 function formatDiff(ms){
   if (ms <= 0) return "Nu";
-  const s = Math.floor(ms/1000);
-  const m = Math.floor(s/60);
-  const h = Math.floor(m/60);
-  if (h > 0) return `${h} uur ${m%60} min`;
-  return `${m} min ${s%60} sec`;
+  const s = Math.floor(ms / 1000);
+  const m = Math.floor(s / 60);
+  const h = Math.floor(m / 60);
+  if (h > 0) return `${h} uur ${m % 60} min`;
+  return `${m} min ${s % 60} sec`;
 }
 
 function updateUI(){
@@ -449,36 +484,36 @@ function updateUI(){
   const next = getNextPrayer();
   const nameEl = document.getElementById("nextPrayerName");
   const timeEl = document.getElementById("nextPrayerTime");
-  const cdEl   = document.getElementById("nextPrayerCountdown");
+  const cdEl = document.getElementById("nextPrayerCountdown");
 
   if (!next){
     nameEl.textContent = "Alle gebeden voorbij";
     timeEl.textContent = "";
-    cdEl.textContent   = "Nieuwe tijden worden geladen...";
-    document.querySelectorAll(".card").forEach(c=>c.classList.remove("highlight"));
+    cdEl.textContent = "Nieuwe tijden worden geladen...";
+    document.querySelectorAll(".card").forEach(c => c.classList.remove("highlight"));
     return;
   }
 
   nameEl.textContent = namesNL[next.name];
   timeEl.textContent =
-    next.time.toLocaleTimeString("nl-NL",{hour:"2-digit",minute:"2-digit",hour12:false});
+    next.time.toLocaleTimeString("nl-NL", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hour12: false
+    });
 
   cdEl.textContent = formatDiff(next.time - new Date());
 
-  document.querySelectorAll(".card").forEach(c=>c.classList.remove("highlight"));
+  document.querySelectorAll(".card").forEach(c => c.classList.remove("highlight"));
   const active = document.querySelector(`.card[data-key="${next.name}"]`);
   if (active) active.classList.add("highlight");
 }
 
-/* ===========================
-   GÜN ÇEVİRME (ISHA SONRASI + TARİH DEĞİŞİNCE)
-=========================== */
 function checkDayRollover(){
   if (!scheduleDate || !timings || !timings.Isha) return;
 
   const now = new Date();
 
-  // ✅ Takvim günü değiştiyse direkt yeni gün
   if (now.toDateString() !== scheduleDate.toDateString()) {
     fetchTimes(now);
     return;
@@ -492,21 +527,44 @@ function checkDayRollover(){
   const ishaTime = new Date(d.getFullYear(), d.getMonth(), d.getDate(), h, m);
 
   if (now > ishaTime) {
-    const tomorrow = new Date(d.getTime() + 24*3600*1000);
+    const tomorrow = new Date(d.getTime() + 24 * 3600 * 1000);
     fetchTimes(tomorrow);
   }
 }
 
-/* ===========================
-   EZAN ÇALMA
-=========================== */
-function playAdhan(){
+function playAdhan() {
   const audio = document.getElementById("adhanAudio");
-  audio.currentTime = 0;
-  audio.play().catch(()=>{});
+
+  try {
+    audio.pause();
+    audio.currentTime = 0;
+  } catch (e) {
+    console.warn("Pause/currentTime reset hatası:", e);
+  }
+
+  audio.muted = false;
+  audio.volume = 1;
+  audio.load();
+
+  setDebug(
+    `Ses başlatılıyor | readyState=${audio.readyState} | currentSrc=${audio.currentSrc || "yok"}`
+  );
+
+  const playPromise = audio.play();
+
+  if (playPromise !== undefined) {
+    playPromise
+      .then(() => {
+        setDebug("Ezan sesi başarıyla çaldı");
+      })
+      .catch((e) => {
+        console.error("Audio play hatası:", e);
+        setDebug("Audio play hatası: " + (e.message || e));
+        alert("Ses oynatılamadı: " + (e.message || e));
+      });
+  }
 }
 
-/* ✅ Asıl fix: “1 dakikalık pencere” yerine “son kontrol → şimdi aralığında geçti mi?” */
 function checkAdhanTrigger() {
   if (!adhanEnabled || !prayerTimes || !prayerTimes.Fajr) return;
 
@@ -514,7 +572,7 @@ function checkAdhanTrigger() {
   if (lastCheckTs == null) lastCheckTs = now;
 
   const from = lastCheckTs;
-  const to   = now;
+  const to = now;
 
   prayerOrder.forEach(key => {
     const pt = prayerTimes[key];
@@ -522,10 +580,9 @@ function checkAdhanTrigger() {
 
     const t = pt.getTime();
 
-    // from < t <= to aralığında vakit geçtiyse çal (gecikmede kaçırmaz)
     if (!played[key] && t > from && t <= to) {
       played[key] = true;
-      console.log("🔊 EZAN ÇALIYOR:", key, new Date(t).toLocaleTimeString("nl-NL",{hour12:false}));
+      setDebug(`Ezan tetiklendi: ${key}`);
       playAdhan();
     }
   });
@@ -533,17 +590,20 @@ function checkAdhanTrigger() {
   lastCheckTs = now;
 }
 
-/* ===========================
-   WAKE LOCK (tablet donmalarını azaltır)
-=========================== */
 async function enableWakeLock() {
   try {
-    if (!("wakeLock" in navigator)) return;
+    if (!("wakeLock" in navigator)) {
+      setDebug("Wake Lock desteklenmiyor");
+      return;
+    }
     wakeLock = await navigator.wakeLock.request("screen");
-    console.log("✅ Wake Lock aktif");
-    wakeLock.addEventListener("release", () => console.log("⚠️ Wake Lock bırakıldı"));
+    setDebug("Wake Lock aktif");
+    wakeLock.addEventListener("release", () => {
+      setDebug("Wake Lock bırakıldı");
+    });
   } catch (e) {
     console.log("Wake Lock alınamadı:", e);
+    setDebug("Wake Lock alınamadı: " + (e.message || e));
   }
 }
 
@@ -554,18 +614,51 @@ document.addEventListener("visibilitychange", async () => {
   }
 });
 
-/* ===========================
-   BUTON
-=========================== */
-document.getElementById("playTestBtn").addEventListener("click", async ()=>{
-  adhanEnabled = true;
-  await enableWakeLock();
-  playAdhan();  // test
+document.addEventListener("DOMContentLoaded", () => {
+  const audio = document.getElementById("adhanAudio");
+
+  audio.addEventListener("loadeddata", () => {
+    setDebug("Audio loadeddata tetiklendi");
+  });
+
+  audio.addEventListener("canplay", () => {
+    setDebug("Audio canplay tetiklendi");
+  });
+
+  audio.addEventListener("canplaythrough", () => {
+    setDebug("Audio canplaythrough tetiklendi");
+  });
+
+  audio.addEventListener("playing", () => {
+    setDebug("Audio gerçekten oynuyor");
+  });
+
+  audio.addEventListener("ended", () => {
+    setDebug("Audio bitti");
+  });
+
+  audio.addEventListener("error", () => {
+    const err = audio.error;
+    let msg = "Bilinmeyen audio hatası";
+    if (err) {
+      if (err.code === 1) msg = "MEDIA_ERR_ABORTED";
+      if (err.code === 2) msg = "MEDIA_ERR_NETWORK";
+      if (err.code === 3) msg = "MEDIA_ERR_DECODE";
+      if (err.code === 4) msg = "MEDIA_ERR_SRC_NOT_SUPPORTED";
+    }
+    setDebug("Audio error: " + msg);
+  });
+
+  setDebug("Sayfa hazır");
 });
 
-/* ===========================
-   LOOP & START
-=========================== */
+document.getElementById("playTestBtn").addEventListener("click", async () => {
+  setDebug("Test butonuna basıldı");
+  adhanEnabled = true;
+  await enableWakeLock();
+  playAdhan();
+});
+
 setInterval(updateUI, 1000);
 setInterval(checkAdhanTrigger, 1000);
 setInterval(checkDayRollover, 5000);
@@ -575,4 +668,3 @@ fetchTimes(new Date());
 
 </body>
 </html>
-
